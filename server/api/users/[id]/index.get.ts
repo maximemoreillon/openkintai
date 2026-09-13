@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 
 export default defineEventHandler(async (event) => {
+  const { id } = getRouterParams(event);
   const user_id = "dummy";
 
   const rows = await db

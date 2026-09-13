@@ -1,13 +1,10 @@
-import { eq } from "drizzle-orm";
-
 export default defineEventHandler(async (event) => {
-  const user_id = "dummy";
-
   const rows = await db
-    .select()
+    .select({
+      user_id: schema.shifts.user_id,
+    })
     .from(schema.shifts)
-    .where(eq(schema.shifts.user_id, user_id))
-    .limit(10);
+    .groupBy(schema.shifts.user_id);
 
   return {
     items: rows,

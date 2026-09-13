@@ -17,7 +17,7 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ["@nuxthub/core"],
+  modules: ["@nuxthub/core", "nuxt-auth-utils"],
   hub: {
     db: "postgresql",
   },
