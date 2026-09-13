@@ -21,4 +21,12 @@ export default defineNuxtConfig({
   hub: {
     db: "postgresql",
   },
+  runtimeConfig: {
+    oauth: {
+      authentik: {
+        clientId: "",
+        clientSecret: "",
+      },
+    },
+  },
 });

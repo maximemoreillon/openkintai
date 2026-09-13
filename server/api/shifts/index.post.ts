@@ -1,12 +1,12 @@
 export default defineEventHandler(async (event) => {
   const currentTime = new Date();
 
-  const user_id = "dummy";
+  const { user } = await requireUserSession(event);
 
   return await db
     .insert(schema.shifts)
     .values({
-      user_id,
+      user_id: user.sub,
       clockIn: currentTime,
     })
     .returning();

@@ -1,14 +1,15 @@
 import { and, eq } from "drizzle-orm";
 
 export default defineEventHandler(async (event) => {
+  const { user } = await requireUserSession(event);
+
   const { id } = getRouterParams(event);
 
-  const user_id = "dummy";
   const currentTime = new Date();
 
   const where = and(
     eq(schema.shifts.id, Number(id)),
-    eq(schema.shifts.user_id, user_id),
+    eq(schema.shifts.user_id, user.sub),
   );
 
   return await db

@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 const route = useRoute();
-const { data } = await useFetch(`/api/users/${route.params.id}`);
+const { data } = await useFetch(`/api/users/${route.params.id}/shifts`);
 
 const headers = [
   {
