@@ -1,18 +1,13 @@
 <template>
   <v-app>
-    <v-app-bar>
-      <!-- TODO: maybe not ideal for navigation -->
-      <v-app-bar-title>
-        <NuxtLink to="/" class="title">OpenKintai</NuxtLink>
-      </v-app-bar-title>
-
+    <v-app-bar title="OpenKintai">
       <template #append>
         <v-btn
           v-if="user?.isManager"
-          text="Management"
-          prepend-icon="mdi-account"
+          :text="inManagement ? 'Clock in/out' : 'Management'"
+          :prepend-icon="inManagement ? 'mdi-clock-outline' : 'mdi-account'"
           variant="outlined"
-          to="/users"
+          :to="inManagement ? '/' : '/users'"
         />
         <v-btn icon="mdi-logout" v-if="loggedIn" to="login" />
       </template>
@@ -26,11 +21,7 @@
 </template>
 <script setup>
 const { loggedIn, user } = useUserSession();
-</script>
 
-<style scoped>
-.title {
-  text-decoration: none;
-  color: inherit;
-}
-</style>
+const route = useRoute();
+const inManagement = computed(() => route.path.startsWith("/users"));
+</script>

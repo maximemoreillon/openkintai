@@ -38,9 +38,9 @@ async function register() {
     snackbar.value.color = "success";
     snackbar.value.text = "Clocked in successfully";
     snackbar.value.show = true;
-  } catch (error) {
+  } catch (error: any) {
     snackbar.value.color = "error";
-    snackbar.value.text = "Error";
+    snackbar.value.text = error?.data?.statusMessage || "Error";
     snackbar.value.show = true;
     console.error(error);
   } finally {

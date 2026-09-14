@@ -30,6 +30,10 @@ export default defineNuxtConfig({
         openidConfig: "",
       },
     },
+    public: {
+      locale: "ja-JP",
+      userManagementUrl: "",
+    },
   },
   app: {
     head: {

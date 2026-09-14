@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   const { id } = getRouterParams(event);
   const { year, month } = getQuery(event); // month is 1-indexed
 
-  if (!id) throw new Error("Missing id");
+  if (!id) throw createError({ statusCode: 400, statusMessage: "Missing id" });
 
   const userId = Number(id);
 
@@ -23,14 +23,5 @@ export default defineEventHandler(async (event) => {
     eq(schema.shifts.user_id, userId),
   );
 
-  const items = await db.select().from(schema.shifts).where(where);
-
-  const [user] = await db
-    .select()
-    .from(schema.users)
-    .where(eq(schema.users.id, userId));
-  return {
-    user,
-    items,
-  };
+  return await db.select().from(schema.shifts).where(where);
 });

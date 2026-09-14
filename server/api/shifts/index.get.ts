@@ -19,13 +19,9 @@ export default defineEventHandler(async (event) => {
     eq(schema.shifts.user_id, user.id),
   );
 
-  const rows = await db
+  return await db
     .select()
     .from(schema.shifts)
     .where(where)
     .orderBy(desc(schema.shifts.clockIn));
-
-  return {
-    items: rows,
-  };
 });

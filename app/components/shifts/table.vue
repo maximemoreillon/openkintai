@@ -1,5 +1,10 @@
 <template>
-  <v-data-table :items="items" :headers="headers" class="mt-6">
+  <v-data-table
+    :items="items"
+    :headers="headers"
+    class="mt-6"
+    :loading="props.loading"
+  >
     <template #top>
       <v-row justify="space-between" align="center">
         <v-col cols="auto" class="d-flex align-center">
@@ -16,7 +21,12 @@
           />
         </v-col>
         <v-col cols="auto">
-          <ShiftsExportButton :items="items" :year="year" :month="month" />
+          <ShiftsExportButton
+            :items="items"
+            :year="year"
+            :month="month"
+            :label="exportLabel"
+          />
         </v-col>
       </v-row>
     </template>
@@ -40,6 +50,8 @@ const route = useRoute();
 
 const props = defineProps<{
   items: any[];
+  loading?: boolean;
+  exportLabel?: string | null;
 }>();
 
 const now = new Date();

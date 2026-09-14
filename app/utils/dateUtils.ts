@@ -16,7 +16,8 @@ export function timeBetweenTimeStamps(ts1: string, ts2: string | null) {
 
 export function formatTimestamp(ts: string | null) {
   if (!ts) return "";
-  return new Date(ts).toLocaleString("ja-JP", {
+  const { locale } = useRuntimeConfig().public;
+  return new Date(ts).toLocaleString(locale, {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",

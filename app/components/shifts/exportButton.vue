@@ -1,5 +1,10 @@
 <template>
-  <v-btn icon="mdi-download" variant="flat" @click="exportCsv" />
+  <v-btn
+    icon="mdi-download"
+    variant="flat"
+    :disabled="!props.items.length"
+    @click="exportCsv"
+  />
 </template>
 
 <script setup lang="ts">
@@ -7,6 +12,7 @@ const props = defineProps<{
   items: any[];
   year: number;
   month: number;
+  label?: string | null;
 }>();
 
 function escapeCsvField(field: string) {
@@ -29,9 +35,14 @@ function exportCsv() {
   const url = URL.createObjectURL(blob);
 
   const monthStr = String(props.month).padStart(2, "0");
+  const label = props.label?.trim().toLowerCase().replace(/\s+/g, "-");
+  const filenameParts = ["shifts", label, `${props.year}-${monthStr}`].filter(
+    Boolean,
+  );
+
   const link = document.createElement("a");
   link.href = url;
-  link.download = `shifts-user-${props.items.at(0).user_id}-${props.year}-${monthStr}.csv`;
+  link.download = `${filenameParts.join("-")}.csv`;
   link.click();
 
   URL.revokeObjectURL(url);
