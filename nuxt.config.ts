@@ -34,6 +34,11 @@ export default defineNuxtConfig({
         clientId: "",
         clientSecret: "",
         openidConfig: "",
+        // Explicit override for the OIDC callback URL. Without this,
+        // nuxt-auth-utils infers scheme/host from the request (trusting
+        // X-Forwarded-Proto), which breaks behind proxies/tunnels that
+        // don't set that header correctly (e.g. Cloudflare Tunnel).
+        redirectURL: "",
       },
     },
     public: {

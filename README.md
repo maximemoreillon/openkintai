@@ -45,6 +45,7 @@ The app is available at `http://localhost:3000`.
 | `NUXT_OAUTH_OIDC_CLIENT_ID`     | OIDC client ID                                                                                |
 | `NUXT_OAUTH_OIDC_CLIENT_SECRET` | OIDC client secret                                                                            |
 | `NUXT_OAUTH_OIDC_OPENID_CONFIG` | URL of the provider's OpenID Connect discovery document (`/.well-known/openid-configuration`) |
+| `NUXT_OAUTH_OIDC_REDIRECT_URL`  | Optional explicit OIDC callback URL (e.g. `https://openkintai.example.com/auth/oidc`). Only needed behind a proxy/tunnel that doesn't set `X-Forwarded-Proto` correctly — see below. |
 | `NUXT_MANAGER_GROUP`            | Name of the OIDC group whose members are granted manager access (view other users' shifts)    |
 | `NUXT_PUBLIC_LOCALE`            | Locale used to format displayed timestamps (e.g. `ja-JP`, `en-US`). Defaults to `ja-JP`.      |
 | `NUXT_PUBLIC_USER_MANAGEMENT_URL` | Optional link to your OIDC provider's user management screen (e.g. an Authentik users page), shown as a "Manage users" button on the Users page. Omit to hide the button. |
@@ -53,6 +54,12 @@ The app is available at `http://localhost:3000`.
 ## Timezone
 
 Shift timestamps are stored without a timezone, and month boundaries (used for the shift history view) are computed in the server process's local time. For shifts to be attributed to the correct month, the deployment's `TZ` environment variable must match the business's actual timezone (e.g. `TZ=Asia/Tokyo`) — otherwise shifts near midnight can be misfiled into the wrong month.
+
+## Reverse proxies / tunnels
+
+By default, the OIDC callback URL sent to your provider is inferred from the incoming request (scheme + host), trusting the `X-Forwarded-Proto` header. Behind Cloudflare Tunnel specifically, that header isn't always set the way this expects, so the app can end up telling your OIDC provider its callback is `http://...` even though it's actually served over `https://`, which the provider will reject as a redirect URI mismatch.
+
+If you hit that, set `NUXT_OAUTH_OIDC_REDIRECT_URL` to the exact public callback URL (e.g. `https://openkintai.example.com/auth/oidc`) — this bypasses the header-based inference entirely and must match what's registered with your OIDC provider.
 
 ## Database migrations
 

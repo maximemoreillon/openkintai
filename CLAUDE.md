@@ -25,6 +25,7 @@ There is no lint or test setup in this repo currently.
 - **Two-table schema** (`server/db/schema.ts`): `users` (keyed by `(issuer, sub)` from OIDC, plus `isManager`) and `shifts` (`user_id`, `clockIn`, nullable `clockOut`). An open shift is one where `clockOut` is null.
 - **Auth flow**:
   - `server/routes/auth/oidc.get.ts` handles the OIDC callback (`nuxt-auth-utils`'s `defineOAuthOidcEventHandler`), decodes the ID token to get the issuer, and calls `upsertUser` (`server/utils/users.ts`) to create/update the local user row and set the session.
+  - The OIDC redirect URI defaults to being inferred from the request (trusting `X-Forwarded-Proto`), which breaks behind proxies/tunnels that don't set that header correctly (observed with Cloudflare Tunnel — the app told Authentik its callback was `http://` while actually served over `https://`). `runtimeConfig.oauth.oidc.redirectURL` (`NUXT_OAUTH_OIDC_REDIRECT_URL`) overrides it explicitly; leave unset unless a deployment needs it.
   - `isManager` is derived purely from OIDC `groups` matching `runtimeConfig.managerGroup` (`NUXT_MANAGER_GROUP` env var) at login/upsert time — it is not editable elsewhere.
   - `server/middleware/auth.ts` requires a session for every `/api/*` request (`requireUserSession`).
   - `app/middleware/auth.global.ts` is a Nuxt global route middleware that redirects unauthenticated users to `/login` for every page except `/login` and `/auth/*`.
