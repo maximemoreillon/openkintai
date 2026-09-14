@@ -4,7 +4,7 @@ declare module "#auth-utils" {
     id: number;
     sub: string;
     name: string | null;
-    isAdmin: boolean;
+    isManager: boolean;
   }
 
   interface UserSession {

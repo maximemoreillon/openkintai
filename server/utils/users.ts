@@ -4,14 +4,14 @@ type User = { sub: string; name?: string | null; groups?: String[] };
 export async function upsertUser(issuer: string, { sub, name, groups }: User) {
   const config = useRuntimeConfig();
 
-  const isAdmin = !!groups?.includes(config.adminGroup);
+  const isManager = !!groups?.includes(config.managerGroup);
 
   const [user] = await db
     .insert(schema.users)
-    .values({ issuer, sub, name: name ?? null, isAdmin })
+    .values({ issuer, sub, name: name ?? null, isManager })
     .onConflictDoUpdate({
       target: [schema.users.issuer, schema.users.sub],
-      set: { name: name, isAdmin },
+      set: { name: name, isManager },
     })
     .returning();
 

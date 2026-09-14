@@ -64,6 +64,13 @@
       "when": 1789355200721,
       "tag": "0008_serious_luckman",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1789369917494,
+      "tag": "0009_rename_is_admin_to_is_manager",
+      "breakpoints": true
     }
   ]
 }

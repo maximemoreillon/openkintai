@@ -22,13 +22,19 @@ export default defineNuxtConfig({
     db: "postgresql",
   },
   runtimeConfig: {
-    adminGroup: "",
+    managerGroup: "",
     oauth: {
       oidc: {
         clientId: "",
         clientSecret: "",
         openidConfig: "",
       },
+    },
+  },
+  app: {
+    head: {
+      title: "OpenKintai",
+      link: [{ rel: "icon", type: "image/x-icon", href: "/icon.png" }],
     },
   },
 });

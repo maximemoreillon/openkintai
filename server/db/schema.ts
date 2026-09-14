@@ -24,7 +24,7 @@ export const users = pgTable(
     issuer: text().notNull(),
     sub: text().notNull(),
     name: text(),
-    isAdmin: boolean().notNull().default(false),
+    isManager: boolean().notNull().default(false),
   },
   (table) => [unique().on(table.issuer, table.sub)],
 );

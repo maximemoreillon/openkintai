@@ -8,8 +8,8 @@
 
       <template #append>
         <v-btn
-          v-if="user?.isAdmin"
-          text="Users"
+          v-if="user?.isManager"
+          text="Management"
           prepend-icon="mdi-account"
           variant="outlined"
           to="/users"
