@@ -1,16 +1,12 @@
 <template>
   <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
   <h2>{{ data?.user?.name }}</h2>
-  <v-data-table-server
+  <ShiftsTable
     v-if="data"
     :items="data.items"
-    :headers="headers"
-    :items-length="10"
-  >
-    <template v-slot:item.duration="{ item }">
-      {{ timeBetweenTimeStamps(item.clockIn, item.clockOut) }}
-    </template>
-  </v-data-table-server>
+    v-model:month="month"
+    v-model:year="year"
+  />
 </template>
 
 <script setup lang="ts">
@@ -18,7 +14,12 @@ import type { BreadcrumbItem } from "vuetify/lib/components/VBreadcrumbs/VBreadc
 
 const route = useRoute();
 
-const { data } = await useFetch(`/api/users/${route.params.id}/shifts`);
+const year = ref(Number(route.query.year) || new Date().getFullYear());
+const month = ref(Number(route.query.month) || new Date().getMonth() + 1);
+
+const { data } = await useFetch(`/api/users/${route.params.id}/shifts`, {
+  query: { year, month },
+});
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -33,21 +34,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     title: data.value?.user?.name || "Unknown user",
     disabled: true,
     href: "#",
-  },
-];
-
-const headers = [
-  {
-    key: "clockIn",
-    title: "Clock in ",
-  },
-  {
-    key: "clockOut",
-    title: "Clock out ",
-  },
-  {
-    key: "duration",
-    title: "Duration",
   },
 ];
 </script>

@@ -1,13 +1,13 @@
 <template>
   <v-row justify="center">
     <v-col cols="auto">
-      <ClockInButton
+      <ShiftsClockInButton
         @registered="refresh"
         :disabled="!!unfinishedShifts.length"
       />
     </v-col>
     <v-col cols="auto">
-      <ClockOutButton
+      <ShiftsClockOutButton
         :id="unfinishedShifts.at(-1)?.id"
         @registered="refresh"
         :disabled="!unfinishedShifts.length"
@@ -15,42 +15,23 @@
     </v-col>
   </v-row>
 
-  <h2>My last 10 shifts</h2>
-  <v-data-table v-if="data" :items="data.items" :headers="headers">
-    <template v-slot:item.duration="{ item }">
-      {{ timeBetweenTimeStamps(item.clockIn, item.clockOut) }}
-    </template>
-
-    <template v-slot:item.clockIn="{ item }">
-      {{ formatTimestamp(item.clockIn) }}
-    </template>
-
-    <template v-slot:item.clockOut="{ item }">
-      {{ formatTimestamp(item.clockOut) }}
-    </template>
-  </v-data-table>
+  <ShiftsTable
+    v-if="data"
+    :items="data.items"
+    v-model:month="month"
+    v-model:year="year"
+  />
 </template>
 
 <script setup lang="ts">
-import ClockInButton from "~/components/shifts/clockInButton.vue";
-import ClockOutButton from "~/components/shifts/clockOutButton.vue";
+const route = useRoute();
 
-const { data, refresh } = await useFetch("/api/shifts");
+const year = ref(Number(route.query.year) || new Date().getFullYear());
+const month = ref(Number(route.query.month) || new Date().getMonth() + 1);
 
-const headers = [
-  {
-    key: "clockIn",
-    title: "Clock in ",
-  },
-  {
-    key: "clockOut",
-    title: "Clock out ",
-  },
-  {
-    key: "duration",
-    title: "Duration",
-  },
-];
+const { data, refresh } = await useFetch("/api/shifts", {
+  query: { year, month },
+});
 
 const unfinishedShifts = computed(() => {
   if (!data.value) return [];
