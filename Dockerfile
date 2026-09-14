@@ -23,12 +23,15 @@ FROM node:22-alpine
 WORKDIR /app
 
 # Only `.output` folder is needed from the build stage
-COPY --from=build /app/.output/ ./
+COPY --from=build --chown=node:node /app/.output/ ./
 
 # Change the port and host
-ENV PORT=80
+ENV PORT=3000
 ENV HOST=0.0.0.0
 
-EXPOSE 80
+EXPOSE 3000
+
+# Run as the non-root user built into the base image instead of root
+USER node
 
 CMD ["node", "/app/server/index.mjs"]

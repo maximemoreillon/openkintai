@@ -79,11 +79,11 @@ Deploy the result behind Node with the environment variables above set, and a re
 
 ## Docker
 
-A two-stage `Dockerfile` is included: it builds the app in a full `node:22-alpine` image, then copies only the built `.output/` into a lean final image. Listens on `PORT` (default `80`) and `HOST` (default `0.0.0.0`).
+A two-stage `Dockerfile` is included: it builds the app in a full `node:22-alpine` image, then copies only the built `.output/` into a lean final image that runs as the non-root `node` user. Listens on `PORT` (default `3000`) and `HOST` (default `0.0.0.0`).
 
 ```bash
 docker build -t openkintai .
-docker run -p 3000:80 --env-file .env openkintai
+docker run -p 3000:3000 --env-file .env openkintai
 ```
 
 The image never applies database migrations itself (see above) — run `npx nuxt db migrate` from an environment with `DATABASE_URL` set, separately from `docker run`.
