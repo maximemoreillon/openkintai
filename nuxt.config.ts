@@ -22,6 +22,7 @@ export default defineNuxtConfig({
     db: "postgresql",
   },
   runtimeConfig: {
+    adminGroup: "",
     oauth: {
       oidc: {
         clientId: "",

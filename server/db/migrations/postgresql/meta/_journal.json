@@ -50,6 +50,20 @@
       "when": 1789348200000,
       "tag": "0006_users_serial_pk",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1789355063048,
+      "tag": "0007_short_komodo",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1789355200721,
+      "tag": "0008_serious_luckman",
+      "breakpoints": true
     }
   ]
 }

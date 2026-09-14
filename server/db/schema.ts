@@ -5,6 +5,7 @@ import {
   integer,
   timestamp,
   unique,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 export const shifts = pgTable("shifts", {
@@ -23,6 +24,7 @@ export const users = pgTable(
     issuer: text().notNull(),
     sub: text().notNull(),
     name: text(),
+    isAdmin: boolean().notNull().default(false),
   },
   (table) => [unique().on(table.issuer, table.sub)],
 );

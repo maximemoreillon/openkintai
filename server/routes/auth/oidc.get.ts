@@ -11,7 +11,7 @@ export default defineOAuthOidcEventHandler({
     const dbUser = await upsertUser(issuer, user);
 
     await setUserSession(event, {
-      user: { id: dbUser.id, sub: dbUser.sub, name: dbUser.name },
+      user: dbUser,
     });
 
     return sendRedirect(event, "/");
