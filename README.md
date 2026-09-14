@@ -82,15 +82,21 @@ npm run build
 npm run preview   # to preview the production build locally
 ```
 
-Deploy the result behind Node with the environment variables above set, and a reachable PostgreSQL database. `hub.db.applyMigrationsDuringBuild` is set to `false` in `nuxt.config.ts`, so `npm run build` never needs `DATABASE_URL` and never touches the database — run `npx nuxt db migrate` (with `DATABASE_URL` set) as its own deploy step, before or after starting the new version.
+`DATABASE_URL` is a runtime-only concern — the build itself never needs or touches it. `hub.db.driver` is explicitly set to `postgres-js` in `nuxt.config.ts` so NuxtHub doesn't need `DATABASE_URL` at build time to pick the right driver (without that, it would silently fall back to an embedded `pglite` database when the var is absent during a build, a decision that can't be undone at runtime afterwards). `hub.db.applyMigrationsDuringBuild` is also set to `false`, since a build environment shouldn't need database access at all. Apply migrations as their own deploy step, with `DATABASE_URL` set in that environment:
+
+```bash
+npx nuxt db migrate
+```
 
 ## Docker
 
 A two-stage `Dockerfile` is included: it builds the app in a full `node:22-alpine` image, then copies only the built `.output/` into a lean final image that runs as the non-root `node` user. Listens on `PORT` (default `3000`) and `HOST` (default `0.0.0.0`).
+
+The build needs no database access or secrets at all — `DATABASE_URL` only needs to be set when running the container:
 
 ```bash
 docker build -t openkintai .
 docker run -p 3000:3000 --env-file .env openkintai
 ```
 
-The image never applies database migrations itself (see above) — run `npx nuxt db migrate` from an environment with `DATABASE_URL` set, separately from `docker run`.
+The image never applies database migrations itself — run `npx nuxt db migrate` from an environment with `DATABASE_URL` set, separately from `docker run`.

@@ -14,7 +14,9 @@ RUN npm ci
 # Copy the entire project
 COPY . ./
 
-# Build the project
+# Build the project. DATABASE_URL is intentionally not available here — see
+# nuxt.config.ts's `hub.db.driver` comment. It's supplied at container
+# runtime instead (docker run / pod env), never at build time.
 RUN npm run build
 
 # Build Stage 2

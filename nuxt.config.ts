@@ -21,9 +21,16 @@ export default defineNuxtConfig({
   hub: {
     db: {
       dialect: "postgresql",
-      // No DATABASE_URL is available inside `docker build`, so don't let
-      // NuxtHub silently migrate a throwaway pglite instance instead. Run
-      // `npx nuxt db migrate` against the real database as a deploy step.
+      // Force the real driver instead of letting NuxtHub silently fall back
+      // to an embedded `pglite` database when DATABASE_URL isn't present at
+      // build time (docker build intentionally never sees it — it's runtime
+      // config only). With the driver forced, the generated production
+      // client reads DATABASE_URL live at server startup instead of baking
+      // a value in at build time.
+      driver: "postgres-js",
+      // DATABASE_URL isn't available inside `docker build`, so don't let
+      // NuxtHub try to apply migrations against a throwaway pglite instance
+      // at build time either. Run `npx nuxt db migrate` as a deploy step.
       applyMigrationsDuringBuild: false,
     },
   },
