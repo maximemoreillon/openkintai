@@ -1,8 +1,9 @@
 declare module "#auth-utils" {
   interface User {
     // Add your own fields
+    id: number;
     sub: string;
-    name: string;
+    name: string | null;
   }
 
   interface UserSession {

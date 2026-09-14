@@ -1,12 +1,17 @@
-import { User } from "#auth-utils";
-
-export async function upsertUser({ sub, name }: User) {
-  return await db
+export async function upsertUser(
+  issuer: string,
+  { sub, name }: { sub: string; name: string },
+) {
+  const [user] = await db
     .insert(schema.users)
-    .values({ sub, name })
+    .values({ issuer, sub, name })
     .onConflictDoUpdate({
-      target: schema.users.sub,
+      target: [schema.users.issuer, schema.users.sub],
       set: { name },
     })
     .returning();
+
+  if (!user) throw new Error("Failed to upsert user");
+
+  return user;
 }

@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   const rows = await db
     .select()
     .from(schema.shifts)
-    .where(eq(schema.shifts.user_id, user.sub))
+    .where(eq(schema.shifts.user_id, user.id))
     .limit(10);
 
   return {

@@ -4,9 +4,9 @@
   <v-list lines="one">
     <v-list-item
       v-for="user in data?.items"
-      :key="user.sub"
+      :key="user.id"
       :title="user.name || 'Unknown user'"
-      :to="`/users/${user.sub}`"
+      :to="`/users/${user.id}/shifts`"
     />
   </v-list>
 </template>

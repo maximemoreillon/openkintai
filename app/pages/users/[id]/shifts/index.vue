@@ -1,5 +1,5 @@
 <template>
-  <h2>User {{ route.params.id }}</h2>
+  <h2>{{ data?.user?.name }}</h2>
   <v-data-table-server
     v-if="data"
     :items="data.items"
@@ -14,7 +14,10 @@
 
 <script setup lang="ts">
 const route = useRoute();
-const { data } = await useFetch(`/api/users/${route.params.id}/shifts`);
+
+const { data, pending } = await useFetch(
+  `/api/users/${route.params.id}/shifts`,
+);
 
 const headers = [
   {

@@ -4,13 +4,21 @@ export default defineEventHandler(async (event) => {
   const { id } = getRouterParams(event);
   if (!id) throw new Error("Missing id");
 
-  const rows = await db
+  const userId = Number(id);
+
+  const [user] = await db
+    .select()
+    .from(schema.users)
+    .where(eq(schema.users.id, userId));
+
+  const items = await db
     .select()
     .from(schema.shifts)
-    .where(eq(schema.shifts.user_id, id))
+    .where(eq(schema.shifts.user_id, userId))
     .limit(10);
 
   return {
-    items: rows,
+    user,
+    items,
   };
 });

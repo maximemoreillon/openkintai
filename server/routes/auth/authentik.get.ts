@@ -1,11 +1,10 @@
 export default defineOAuthAuthentikEventHandler({
   config: {},
   async onSuccess(event, { user, tokens }) {
-    // TODO: Upsert user in DB
-    // IDEA: could use the DB id in session
+    const dbUser = await upsertUser("authentik", user);
 
     await setUserSession(event, {
-      user,
+      user: { id: dbUser.id, sub: dbUser.sub, name: dbUser.name },
     });
 
     return sendRedirect(event, "/");

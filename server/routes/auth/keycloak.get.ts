@@ -1,13 +1,10 @@
 export default defineOAuthKeycloakEventHandler({
   config: {},
   async onSuccess(event, { user, tokens }) {
-    // TODO: Upsert user in DB
-    // IDEA: could use the DB id in session
-
-    await upsertUser(user);
+    const dbUser = await upsertUser("keycloak", user);
 
     await setUserSession(event, {
-      user,
+      user: { id: dbUser.id, sub: dbUser.sub, name: dbUser.name },
     });
 
     return sendRedirect(event, "/");

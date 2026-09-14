@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   return await db
     .insert(schema.shifts)
     .values({
-      user_id: user.sub,
+      user_id: user.id,
       clockIn: currentTime,
     })
     .returning();

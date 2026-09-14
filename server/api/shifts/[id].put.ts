@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
 
   const where = and(
     eq(schema.shifts.id, Number(id)),
-    eq(schema.shifts.user_id, user.sub),
+    eq(schema.shifts.user_id, user.id),
   );
 
   return await db
