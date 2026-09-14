@@ -19,24 +19,9 @@
         </v-row>
       </template>
       <template v-else>
-        <v-row v-if="providers?.authentik">
+        <v-row>
           <v-col>
-            <v-btn
-              text="Login with Authentik"
-              href="/auth/authentik"
-              color="primary"
-              block
-            />
-          </v-col>
-        </v-row>
-        <v-row v-if="providers?.keycloak">
-          <v-col>
-            <v-btn
-              text="Login with Keycloak"
-              href="/auth/keycloak"
-              color="primary"
-              block
-            />
+            <v-btn text="Login" href="/auth/oidc" color="primary" block />
           </v-col>
         </v-row>
       </template>
@@ -46,5 +31,4 @@
 
 <script setup>
 const { loggedIn, user, clear } = useUserSession();
-const { data: providers } = await useFetch("/api/auth/providers");
 </script>

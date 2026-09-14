@@ -1,6 +1,10 @@
 <template>
   <v-app>
-    <v-app-bar title="OpenKintai"> </v-app-bar>
+    <v-app-bar title="OpenKintai">
+      <template #prepend>
+        <!-- TODO: logout button -->
+      </template>
+    </v-app-bar>
     <v-main>
       <v-container>
         <NuxtPage />

@@ -23,15 +23,10 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     oauth: {
-      authentik: {
+      oidc: {
         clientId: "",
         clientSecret: "",
-      },
-      keycloak: {
-        clientId: "",
-        clientSecret: "",
-        realm: "",
-        serverUrl: "",
+        openidConfig: "",
       },
     },
   },
