@@ -1,17 +1,13 @@
 import { pgTable, text, serial, timestamp } from "drizzle-orm/pg-core";
 
-// Idea 1: 2 record per shift
-export const records = pgTable("records", {
-  id: serial().primaryKey(),
-  user_id: text().notNull(),
-  time: timestamp().notNull().defaultNow(),
-  action: text().notNull(),
-});
-
-// Idea 2: 1 record per shift
 export const shifts = pgTable("shifts", {
   id: serial().primaryKey(),
-  user_id: text().notNull(),
+  user_id: text().notNull(), // TODO: foreign key
   clockIn: timestamp().notNull().defaultNow(),
   clockOut: timestamp(),
+});
+
+export const users = pgTable("users", {
+  sub: text().unique().primaryKey(),
+  name: text(),
 });

@@ -1,10 +1,5 @@
 export default defineEventHandler(async (event) => {
-  const rows = await db
-    .select({
-      user_id: schema.shifts.user_id,
-    })
-    .from(schema.shifts)
-    .groupBy(schema.shifts.user_id);
+  const rows = await db.select().from(schema.users);
 
   return {
     items: rows,

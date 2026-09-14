@@ -27,6 +27,12 @@ export default defineNuxtConfig({
         clientId: "",
         clientSecret: "",
       },
+      keycloak: {
+        clientId: "",
+        clientSecret: "",
+        realm: "",
+        serverUrl: "",
+      },
     },
   },
 });

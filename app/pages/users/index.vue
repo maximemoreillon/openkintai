@@ -3,10 +3,10 @@
 
   <v-list lines="one">
     <v-list-item
-      v-for="item in data?.items"
-      :key="item.user_id"
-      :title="item.user_id"
-      :to="`/users/${item.user_id}`"
+      v-for="user in data?.items"
+      :key="user.sub"
+      :title="user.name || 'Unknown user'"
+      :to="`/users/${user.sub}`"
     />
   </v-list>
 </template>

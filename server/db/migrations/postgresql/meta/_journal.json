@@ -22,6 +22,27 @@
       "when": 1789214893474,
       "tag": "0002_real_ultron",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789347501754,
+      "tag": "0003_tan_fallen_one",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1789347904081,
+      "tag": "0004_tiresome_jackal",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1789348101353,
+      "tag": "0005_empty_dark_beast",
+      "breakpoints": true
     }
   ]
 }
