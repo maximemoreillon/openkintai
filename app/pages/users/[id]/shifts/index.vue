@@ -1,4 +1,5 @@
 <template>
+  <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
   <h2>{{ data?.user?.name }}</h2>
   <v-data-table-server
     v-if="data"
@@ -16,6 +17,22 @@
 const route = useRoute();
 
 const { data } = await useFetch(`/api/users/${route.params.id}/shifts`);
+
+const breadcrumbs = [
+  {
+    title: "Home",
+    href: "/",
+  },
+  {
+    title: "Users",
+    href: "/users",
+  },
+  {
+    title: data.value?.user?.name || "Unknown user",
+    disabled: true,
+    href: "#",
+  },
+];
 
 const headers = [
   {

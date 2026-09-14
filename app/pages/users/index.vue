@@ -1,4 +1,6 @@
 <template>
+  <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
+
   <h2>Users</h2>
 
   <v-list lines="one">
@@ -12,5 +14,17 @@
 </template>
 
 <script setup lang="ts">
+const breadcrumbs = [
+  {
+    title: "Home",
+    href: "/",
+  },
+  {
+    title: "Users",
+    href: "/users",
+    disabled: true,
+  },
+];
+
 const { data } = await useFetch("/api/users");
 </script>
