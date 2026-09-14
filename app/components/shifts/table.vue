@@ -37,12 +37,13 @@
 const router = useRouter();
 const route = useRoute();
 
-const year = defineModel<number>("year", { required: true });
-const month = defineModel<number>("month", { required: true });
-
 const props = defineProps<{
   items: any[];
 }>();
+
+const now = new Date();
+const year = computed(() => Number(route.query.year) || now.getFullYear());
+const month = computed(() => Number(route.query.month) || now.getMonth() + 1);
 
 const headers = [
   {
@@ -60,17 +61,19 @@ const headers = [
 ];
 
 function changeMonth(increment: number) {
-  month.value += increment;
-  if (month.value < 1) {
-    month.value = 12;
-    year.value--;
-  } else if (month.value > 12) {
-    month.value = 1;
-    year.value++;
+  let newMonth = month.value + increment;
+  let newYear = year.value;
+
+  if (newMonth < 1) {
+    newMonth = 12;
+    newYear--;
+  } else if (newMonth > 12) {
+    newMonth = 1;
+    newYear++;
   }
-  // Store in URL;
+
   router.push({
-    query: { ...route.query, year: year.value, month: month.value },
+    query: { ...route.query, year: newYear, month: newMonth },
   });
 }
 </script>
