@@ -14,14 +14,14 @@ OpenKintai is a minimal clock-in/clock-out (attendance) tracker built on Nuxt 4 
 - `npm run build` — production build
 - `npm run generate` — static generation
 - `npm run preview` — preview a production build
-- `npx nuxt db generate` — generate a new migration after editing `server/db/schema.ts` (NuxtHub's own CLI command; it runs `nuxt prepare`, rebuilds the schema, then calls `drizzle-kit generate` under the hood). Generated migrations go in `server/db/migrations/postgresql/`. `npx nuxt db migrate` applies pending migrations explicitly — NuxtHub also auto-applies them on dev server start and during `nuxt build` (when `DATABASE_URL` is available at build time).
+- `npx nuxt db generate` — generate a new migration after editing `server/db/schema.ts` (NuxtHub's own CLI command; it runs `nuxt prepare`, rebuilds the schema, then calls `drizzle-kit generate` under the hood). Generated migrations go in `server/db/migrations/postgresql/`. NuxtHub auto-applies pending migrations on `npm run dev` start, but `hub.db.applyMigrationsDuringBuild` is explicitly set to `false` in `nuxt.config.ts` (the Dockerfile build has no `DATABASE_URL`, so leaving this on the default `true` would silently apply migrations to a throwaway `pglite` instance instead of the real database) — apply migrations in production with `npx nuxt db migrate` as its own deploy step.
 
 There is no lint or test setup in this repo currently.
 
 ## Architecture
 
 - **Nuxt 4 app directory layout**: pages/components/middleware/plugins live under `app/`, not the repo root.
-- **NuxtHub (`@nuxthub/core`) owns the database wiring.** `hub: { db: "postgresql" }` in `nuxt.config.ts`, combined with `server/db/schema.ts`, causes NuxtHub to generate the `@nuxthub/db` module. This exposes two server-side auto-imported globals used throughout `server/api/**` and `server/utils/**`: `db` (a Drizzle client) and `schema` (the Drizzle schema from `server/db/schema.ts`). Neither is imported explicitly in route handlers — they're ambient globals, resolved via `.nuxt/types/nitro-imports.d.ts`. Do not add manual imports for them.
+- **NuxtHub (`@nuxthub/core`) owns the database wiring.** `hub.db` in `nuxt.config.ts`, combined with `server/db/schema.ts`, causes NuxtHub to generate the `@nuxthub/db` module. This exposes two server-side auto-imported globals used throughout `server/api/**` and `server/utils/**`: `db` (a Drizzle client) and `schema` (the Drizzle schema from `server/db/schema.ts`). Neither is imported explicitly in route handlers — they're ambient globals, resolved via `.nuxt/types/nitro-imports.d.ts`. Do not add manual imports for them.
 - **Two-table schema** (`server/db/schema.ts`): `users` (keyed by `(issuer, sub)` from OIDC, plus `isManager`) and `shifts` (`user_id`, `clockIn`, nullable `clockOut`). An open shift is one where `clockOut` is null.
 - **Auth flow**:
   - `server/routes/auth/oidc.get.ts` handles the OIDC callback (`nuxt-auth-utils`'s `defineOAuthOidcEventHandler`), decodes the ID token to get the issuer, and calls `upsertUser` (`server/utils/users.ts`) to create/update the local user row and set the session.

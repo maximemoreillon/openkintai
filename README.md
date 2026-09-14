@@ -62,7 +62,11 @@ Schema is defined in `server/db/schema.ts`. After changing it, generate a migrat
 npx nuxt db generate
 ```
 
-(NuxtHub writes that config file at dev/build time — run `npm run dev` at least once first if `.nuxt/hub` doesn't exist yet.) Generated migrations are written to `server/db/migrations/postgresql/` and applied automatically by NuxtHub on startup.
+Generated migrations are written to `server/db/migrations/postgresql/`. NuxtHub auto-applies pending migrations on `npm run dev` start, but **not** in production (see below) — apply them explicitly with:
+
+```bash
+npx nuxt db migrate
+```
 
 ## Production
 
@@ -71,4 +75,15 @@ npm run build
 npm run preview   # to preview the production build locally
 ```
 
-Deploy the result behind Node with the environment variables above set, and a reachable PostgreSQL database.
+Deploy the result behind Node with the environment variables above set, and a reachable PostgreSQL database. `hub.db.applyMigrationsDuringBuild` is set to `false` in `nuxt.config.ts`, so `npm run build` never needs `DATABASE_URL` and never touches the database — run `npx nuxt db migrate` (with `DATABASE_URL` set) as its own deploy step, before or after starting the new version.
+
+## Docker
+
+A two-stage `Dockerfile` is included: it builds the app in a full `node:22-alpine` image, then copies only the built `.output/` into a lean final image. Listens on `PORT` (default `80`) and `HOST` (default `0.0.0.0`).
+
+```bash
+docker build -t openkintai .
+docker run -p 3000:80 --env-file .env openkintai
+```
+
+The image never applies database migrations itself (see above) — run `npx nuxt db migrate` from an environment with `DATABASE_URL` set, separately from `docker run`.

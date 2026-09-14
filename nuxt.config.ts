@@ -19,7 +19,13 @@ export default defineNuxtConfig({
 
   modules: ["@nuxthub/core", "nuxt-auth-utils"],
   hub: {
-    db: "postgresql",
+    db: {
+      dialect: "postgresql",
+      // No DATABASE_URL is available inside `docker build`, so don't let
+      // NuxtHub silently migrate a throwaway pglite instance instead. Run
+      // `npx nuxt db migrate` against the real database as a deploy step.
+      applyMigrationsDuringBuild: false,
+    },
   },
   runtimeConfig: {
     managerGroup: "",
