@@ -1,21 +1,22 @@
 <template>
   <v-data-table :items="items" :headers="headers" class="mt-6">
     <template #top>
-      <v-row justify="center" align="center">
-        <v-col cols="auto">
+      <v-row justify="space-between" align="center">
+        <v-col cols="auto" class="d-flex align-center">
           <v-btn
             icon="mdi-chevron-left"
             variant="flat"
             @click="changeMonth(-1)"
           />
-        </v-col>
-        <v-col cols="auto"> {{ year }}/{{ month }} </v-col>
-        <v-col cols="auto">
+          <span class="mx-2">{{ year }}/{{ month }}</span>
           <v-btn
             icon="mdi-chevron-right"
             variant="flat"
             @click="changeMonth(1)"
           />
+        </v-col>
+        <v-col cols="auto">
+          <ShiftsExportButton :items="items" :year="year" :month="month" />
         </v-col>
       </v-row>
     </template>
