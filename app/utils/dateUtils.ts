@@ -13,3 +13,14 @@ export function timeBetweenTimeStamps(ts1: string, ts2: string | null) {
 
   return `${diffHours.toString().padStart(2, "0")}:${diffMinutes.toString().padStart(2, "0")}`;
 }
+
+export function formatTimestamp(ts: string | null) {
+  if (!ts) return "";
+  return new Date(ts).toLocaleString("ja-JP", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}

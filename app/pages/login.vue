@@ -30,5 +30,5 @@
 </template>
 
 <script setup>
-const { loggedIn, user, clear } = useUserSession();
+const { loggedIn, clear } = useUserSession();
 </script>

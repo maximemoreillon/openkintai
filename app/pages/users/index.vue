@@ -7,7 +7,7 @@
     <v-list-item
       v-for="user in data?.items"
       :key="user.id"
-      :title="`${user.name || 'Unknown user'} (${user.issuer}) ${user.isAdmin ? '(Admin)' : ''}`"
+      :title="`${user.name || 'Unknown user'} ${user.isAdmin ? '(Admin)' : ''}`"
       :to="`/users/${user.id}/shifts`"
     />
   </v-list>

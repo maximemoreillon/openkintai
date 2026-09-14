@@ -1,11 +1,13 @@
 <template>
   <v-btn
+    prepend-icon="mdi-stop"
     text="Clock out"
     color="red"
     @click="register"
     :variant="props.disabled ? 'outlined' : 'elevated'"
     :loading="loading"
     :disabled="props.disabled"
+    size="x-large"
   />
   <v-snackbar
     :text="snackbar.text"

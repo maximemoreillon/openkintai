@@ -1,5 +1,4 @@
 <template>
-  <h2>Shifts</h2>
   <v-row justify="center">
     <v-col cols="auto">
       <ClockInButton
@@ -16,17 +15,20 @@
     </v-col>
   </v-row>
 
-  <h3>Last 10 shifts</h3>
-  <v-data-table-server
-    v-if="data"
-    :items="data.items"
-    :headers="headers"
-    :items-length="10"
-  >
+  <h2>My last 10 shifts</h2>
+  <v-data-table v-if="data" :items="data.items" :headers="headers">
     <template v-slot:item.duration="{ item }">
       {{ timeBetweenTimeStamps(item.clockIn, item.clockOut) }}
     </template>
-  </v-data-table-server>
+
+    <template v-slot:item.clockIn="{ item }">
+      {{ formatTimestamp(item.clockIn) }}
+    </template>
+
+    <template v-slot:item.clockOut="{ item }">
+      {{ formatTimestamp(item.clockOut) }}
+    </template>
+  </v-data-table>
 </template>
 
 <script setup lang="ts">

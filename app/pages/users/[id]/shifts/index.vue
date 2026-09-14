@@ -14,11 +14,13 @@
 </template>
 
 <script setup lang="ts">
+import type { BreadcrumbItem } from "vuetify/lib/components/VBreadcrumbs/VBreadcrumbs.mjs";
+
 const route = useRoute();
 
 const { data } = await useFetch(`/api/users/${route.params.id}/shifts`);
 
-const breadcrumbs = [
+const breadcrumbs: BreadcrumbItem[] = [
   {
     title: "Home",
     href: "/",
