@@ -1,7 +1,9 @@
 import { decodeJwt } from "jose";
 
 export default defineOAuthOidcEventHandler({
-  config: {},
+  config: {
+    scope: ["openid", "profile"],
+  },
   async onSuccess(event, { user, tokens }) {
     const issuer = tokens.id_token && decodeJwt(tokens.id_token).iss;
     if (!issuer) throw new Error("ID token is missing an issuer");
