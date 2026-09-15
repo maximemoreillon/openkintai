@@ -1,0 +1,98 @@
+<template>
+  <v-breadcrumbs :items="breadcrumbs" />
+
+  <v-alert
+    v-if="error"
+    type="error"
+    class="mb-4"
+    text="Failed to load shift. Please try refreshing the page."
+  />
+
+  <template v-if="shift">
+    <h2>Shift</h2>
+    <p>
+      {{ formatTimestamp(shift.clockIn) }} &ndash;
+      {{ formatTimestamp(shift.clockOut) }}
+    </p>
+
+    <v-textarea v-model="notes" label="Notes" class="mt-4" auto-grow />
+
+    <v-btn text="Save" color="primary" :loading="saving" @click="save" />
+  </template>
+
+  <v-snackbar
+    :text="snackbar.text"
+    v-model="snackbar.show"
+    :color="snackbar.color"
+  />
+</template>
+
+<script setup lang="ts">
+import type { BreadcrumbItem } from "vuetify/lib/components/VBreadcrumbs/VBreadcrumbs.mjs";
+
+// The shape of a shift as returned over JSON (timestamps arrive as strings,
+// not the `Date` Drizzle's own types would suggest).
+type Shift = {
+  id: number;
+  user_id: number;
+  clockIn: string;
+  clockOut: string | null;
+  notes: string | null;
+};
+
+const route = useRoute();
+
+// Typed explicitly: `/api/shifts/${id}` also matches `/api/shifts/active.get.ts`
+// by pattern, so without a generic the inferred type is a union with that
+// route's response shape.
+const { data: shift, error } = await useFetch<Shift>(
+  () => `/api/shifts/${route.params.id}`,
+);
+
+const notes = computed({
+  get: () => shift.value?.notes ?? "",
+  set: (value: string) => {
+    if (shift.value) shift.value.notes = value;
+  },
+});
+const saving = ref(false);
+
+const breadcrumbs = computed<BreadcrumbItem[]>(() => [
+  {
+    title: "Shifts",
+    to: "/",
+  },
+  {
+    title: shift.value
+      ? formatTimestamp(shift.value.clockIn)
+      : String(route.params.id),
+    disabled: true,
+  },
+]);
+
+const snackbar = ref({
+  show: false,
+  text: "",
+  color: "success",
+});
+
+async function save() {
+  saving.value = true;
+  try {
+    const updated = await $fetch<Shift>(`/api/shifts/${route.params.id}`, {
+      method: "PATCH",
+      body: { notes: notes.value },
+    });
+    shift.value = updated;
+    snackbar.value.color = "success";
+    snackbar.value.text = "Saved";
+    snackbar.value.show = true;
+  } catch (error: any) {
+    snackbar.value.color = "error";
+    snackbar.value.text = error?.data?.statusMessage || "Error";
+    snackbar.value.show = true;
+  } finally {
+    saving.value = false;
+  }
+}
+</script>

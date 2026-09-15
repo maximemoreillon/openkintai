@@ -1,35 +1,16 @@
 <template>
-  <v-data-table
-    :items="items"
-    :headers="headers"
-    class="mt-6"
-    :loading="props.loading"
-  >
-    <template #top>
-      <v-row justify="space-between" align="center">
-        <v-col cols="auto" class="d-flex align-center">
-          <v-btn
-            icon="mdi-chevron-left"
-            variant="flat"
-            @click="changeMonth(-1)"
-          />
-          <span class="mx-2">{{ year }}/{{ month }}</span>
-          <v-btn
-            icon="mdi-chevron-right"
-            variant="flat"
-            @click="changeMonth(1)"
-          />
-        </v-col>
-        <v-col cols="auto">
-          <ShiftsExportButton
-            :items="items"
-            :year="year"
-            :month="month"
-            :label="exportLabel"
-          />
-        </v-col>
-      </v-row>
-    </template>
+  <v-toolbar class="px-4">
+    <ShiftsDateRangePicker v-model="range" />
+    <v-spacer />
+
+    <ShiftsExportButton
+      :items="items"
+      :from="fromDate"
+      :to="toDate"
+      :label="exportLabel"
+    />
+  </v-toolbar>
+  <v-data-table :items="items" :headers="headers" :loading="props.loading">
     <template v-slot:item.duration="{ item }">
       {{ timeBetweenTimeStamps(item.clockIn, item.clockOut) }}
     </template>
@@ -40,6 +21,15 @@
 
     <template v-slot:item.clockOut="{ item }">
       {{ formatTimestamp(item.clockOut) }}
+    </template>
+
+    <template v-slot:item.actions="{ item }">
+      <v-btn
+        icon="mdi-pencil"
+        variant="text"
+        size="small"
+        :to="`/shifts/${item.id}`"
+      />
     </template>
   </v-data-table>
 </template>
@@ -55,8 +45,28 @@ const props = defineProps<{
 }>();
 
 const now = new Date();
-const year = computed(() => Number(route.query.year) || now.getFullYear());
-const month = computed(() => Number(route.query.month) || now.getMonth() + 1);
+const defaultFrom = new Date(now.getFullYear(), now.getMonth(), 1);
+
+const fromDate = computed(() =>
+  route.query.from ? parseLocalDate(String(route.query.from)) : defaultFrom,
+);
+
+const toDate = computed(() =>
+  route.query.to ? parseLocalDate(String(route.query.to)) : now,
+);
+
+const range = computed({
+  get: (): [Date, Date] => [fromDate.value, toDate.value],
+  set: ([from, to]: [Date, Date]) => {
+    router.push({
+      query: {
+        ...route.query,
+        from: toDateInputValue(from),
+        to: toDateInputValue(to),
+      },
+    });
+  },
+});
 
 const headers = [
   {
@@ -71,22 +81,14 @@ const headers = [
     key: "duration",
     title: "Duration",
   },
+  {
+    key: "notes",
+    title: "Notes",
+  },
+  {
+    key: "actions",
+    title: "",
+    sortable: false,
+  },
 ];
-
-function changeMonth(increment: number) {
-  let newMonth = month.value + increment;
-  let newYear = year.value;
-
-  if (newMonth < 1) {
-    newMonth = 12;
-    newYear--;
-  } else if (newMonth > 12) {
-    newMonth = 1;
-    newYear++;
-  }
-
-  router.push({
-    query: { ...route.query, year: newYear, month: newMonth },
-  });
-}
 </script>

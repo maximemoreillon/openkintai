@@ -9,7 +9,7 @@
           variant="outlined"
           :to="inManagement ? '/' : '/users'"
         />
-        <v-btn icon="mdi-logout" v-if="loggedIn" to="login" />
+        <v-btn icon="mdi-logout" v-if="loggedIn" to="/login" />
       </template>
     </v-app-bar>
     <v-main>

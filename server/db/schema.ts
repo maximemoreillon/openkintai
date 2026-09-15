@@ -15,6 +15,7 @@ export const shifts = pgTable("shifts", {
     .references(() => users.id),
   clockIn: timestamp().notNull().defaultNow(),
   clockOut: timestamp(),
+  notes: text(),
 });
 
 export const users = pgTable(

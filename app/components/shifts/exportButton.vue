@@ -1,7 +1,9 @@
 <template>
   <v-btn
-    icon="mdi-download"
-    variant="flat"
+    prepend-icon="mdi-download"
+    text="export"
+    variant="outlined"
+    color="primary"
     :disabled="!props.items.length"
     @click="exportCsv"
   />
@@ -10,8 +12,8 @@
 <script setup lang="ts">
 const props = defineProps<{
   items: any[];
-  year: number;
-  month: number;
+  from: Date;
+  to: Date;
   label?: string | null;
 }>();
 
@@ -21,11 +23,12 @@ function escapeCsvField(field: string) {
 
 function exportCsv() {
   const rows = [
-    ["Clock in", "Clock out", "Duration"],
+    ["Clock in", "Clock out", "Duration", "Notes"],
     ...props.items.map((item) => [
       formatTimestamp(item.clockIn),
       formatTimestamp(item.clockOut),
       timeBetweenTimeStamps(item.clockIn, item.clockOut),
+      item.notes ?? "",
     ]),
   ];
 
@@ -34,11 +37,9 @@ function exportCsv() {
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
 
-  const monthStr = String(props.month).padStart(2, "0");
   const label = props.label?.trim().toLowerCase().replace(/\s+/g, "-");
-  const filenameParts = ["shifts", label, `${props.year}-${monthStr}`].filter(
-    Boolean,
-  );
+  const dateRange = `${toDateInputValue(props.from)}_${toDateInputValue(props.to)}`;
+  const filenameParts = ["shifts", label, dateRange].filter(Boolean);
 
   const link = document.createElement("a");
   link.href = url;

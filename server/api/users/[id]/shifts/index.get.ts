@@ -2,20 +2,19 @@ import { and, eq, gte, lt } from "drizzle-orm";
 
 export default defineEventHandler(async (event) => {
   const { id } = getRouterParams(event);
-  const { year, month } = getQuery(event); // month is 1-indexed
+  const { from, to } = getQuery(event);
 
   if (!id) throw createError({ statusCode: 400, statusMessage: "Missing id" });
 
   const userId = Number(id);
 
   const now = new Date();
-  const startDate = new Date(
-    year ? Number(year) : now.getFullYear(),
-    month ? Number(month) - 1 : now.getMonth(),
-    1,
-  );
-  const endDate = new Date(startDate);
-  endDate.setMonth(endDate.getMonth() + 1);
+  const startDate = from
+    ? parseLocalDate(String(from))
+    : new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const endDate = to ? parseLocalDate(String(to)) : new Date(now);
+  endDate.setDate(endDate.getDate() + 1);
 
   const where = and(
     gte(schema.shifts.clockIn, startDate),

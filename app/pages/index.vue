@@ -6,7 +6,7 @@
     text="Failed to load shifts. Please try refreshing the page."
   />
 
-  <v-row justify="center">
+  <v-row justify="center" class="my-4">
     <v-col cols="auto">
       <ShiftsClockInButton
         @registered="onRegistered"
