@@ -1,10 +1,5 @@
 <template>
-  <v-btn
-    prepend-icon="mdi-arrow-left"
-    text="Return"
-    variant="text"
-    @click="goBack(router, '/')"
-  />
+  <v-breadcrumbs :items="breadcrumbs" />
 
   <v-row justify="space-between" align="center">
     <h2>Users</h2>
@@ -43,8 +38,14 @@
 </template>
 
 <script setup lang="ts">
-const router = useRouter();
+import type { BreadcrumbItem } from "vuetify/lib/components/VBreadcrumbs/VBreadcrumbs.mjs";
+
 const { userManagementUrl } = useRuntimeConfig().public;
 
 const { data, error } = await useFetch("/api/users");
+
+const breadcrumbs: BreadcrumbItem[] = [
+  { title: "Home", to: "/" },
+  { title: "Users", disabled: true },
+];
 </script>

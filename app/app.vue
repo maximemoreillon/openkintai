@@ -7,13 +7,6 @@
         </NuxtLink>
       </template>
       <template #append>
-        <v-btn
-          v-if="user?.isManager"
-          text="Users"
-          prepend-icon="mdi-account"
-          variant="outlined"
-          to="/users"
-        />
         <v-btn icon="mdi-logout" v-if="loggedIn" to="/login" />
       </template>
     </v-app-bar>
@@ -25,5 +18,5 @@
   </v-app>
 </template>
 <script setup>
-const { loggedIn, user } = useUserSession();
+const { loggedIn } = useUserSession();
 </script>

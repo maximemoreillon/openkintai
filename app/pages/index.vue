@@ -28,8 +28,15 @@
         prepend-icon="mdi-format-list-bulleted"
         text="My shifts"
         variant="outlined"
-        color="primary"
         :to="`/users/${user?.id}/shifts`"
+      />
+    </v-col>
+    <v-col cols="auto" v-if="user?.isManager">
+      <v-btn
+        prepend-icon="mdi-account"
+        text="Users"
+        variant="outlined"
+        to="/users"
       />
     </v-col>
   </v-row>
