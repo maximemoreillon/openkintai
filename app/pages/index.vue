@@ -1,12 +1,12 @@
 <template>
   <v-alert
-    v-if="activeError"
+    v-if="error"
     type="error"
     class="mb-4"
     text="Failed to load shifts. Please try refreshing the page."
   />
 
-  <v-row justify="center" class="my-4">
+  <v-row justify="center" class="my-8">
     <v-col cols="auto">
       <ShiftsClockInButton
         @registered="onRegistered"
@@ -31,7 +31,9 @@
         :to="`/users/${user?.id}/shifts`"
       />
     </v-col>
-    <v-col cols="auto" v-if="user?.isManager">
+  </v-row>
+  <v-row v-if="user?.isManager" justify="center">
+    <v-col cols="auto">
       <v-btn
         prepend-icon="mdi-account"
         text="Users"
@@ -45,13 +47,9 @@
 <script setup lang="ts">
 const { user } = useUserSession();
 
-const {
-  data: active,
-  refresh: refreshActive,
-  error: activeError,
-} = await useFetch("/api/shifts/active");
+const { data: active, refresh, error } = await useFetch("/api/shifts/active");
 
 function onRegistered() {
-  refreshActive();
+  refresh();
 }
 </script>
