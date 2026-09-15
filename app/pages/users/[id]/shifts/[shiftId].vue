@@ -41,6 +41,7 @@ type Shift = {
 };
 
 const route = useRoute();
+const { user: sessionUser } = useUserSession();
 
 // Typed explicitly: `/api/shifts/${id}` also matches `/api/shifts/active.get.ts`
 // by pattern, so without a generic the inferred type is a union with that
@@ -48,23 +49,33 @@ const route = useRoute();
 // `deep: true` because the form below edits fields on `shift` in place —
 // useFetch's data is a shallowRef by Nuxt's default, which would make
 // nested mutations (shift.value.notes = ...) invisible to reactivity.
-const { data: shift, error } = await useFetch<Shift>(
-  () => `/api/shifts/${route.params.shiftId}`,
-  { deep: true },
-);
+const [{ data: shift, error }, { data: shiftUser }] = await Promise.all([
+  useFetch<Shift>(() => `/api/shifts/${route.params.shiftId}`, {
+    deep: true,
+  }),
+  useFetch(() => `/api/users/${route.params.id}`),
+]);
 
 const saving = ref(false);
 
-const breadcrumbs = computed<BreadcrumbItem[]>(() => [
-  { title: "Home", to: "/" },
-  { title: "Users", to: `/users/${route.params.id}/shifts` },
-  {
-    title: shift.value
-      ? formatTimestamp(shift.value.clockIn)
-      : String(route.params.shiftId),
-    disabled: true,
-  },
-]);
+const breadcrumbs = computed<BreadcrumbItem[]>(() => {
+  const userShiftsPath = `/users/${route.params.id}/shifts`;
+
+  return [
+    { title: "Home", to: "/" },
+    sessionUser.value?.isManager
+      ? { title: "Users", to: "/users" }
+      : { title: "Users", disabled: true },
+    { title: shiftUser.value?.name || "Unknown user", to: userShiftsPath },
+    { title: "Shifts", to: userShiftsPath },
+    {
+      title: shift.value
+        ? formatTimestamp(shift.value.clockIn)
+        : String(route.params.shiftId),
+      disabled: true,
+    },
+  ];
+});
 
 const snackbar = ref({
   show: false,
