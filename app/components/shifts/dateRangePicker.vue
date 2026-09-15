@@ -1,42 +1,40 @@
 <template>
-  <v-menu :close-on-content-click="false">
-    <template v-slot:activator="{ props: menuProps }">
-      <v-text-field
-        :model-value="dateRangeText"
-        label="Date range"
-        prepend-inner-icon="mdi-calendar"
+  <v-row>
+    <v-col cols="auto">
+      <v-date-input
+        v-model="fromDate"
+        label="From"
         density="compact"
-        variant="outlined"
         hide-details
-        readonly
-        v-bind="menuProps"
-        max-width="30ch"
+        width="20ch"
       />
-    </template>
-    <v-date-range-picker v-model="selection" />
-  </v-menu>
+    </v-col>
+    <v-col cols="auto">
+      <v-date-input
+        v-model="toDate"
+        label="To"
+        density="compact"
+        hide-details
+        width="20ch"
+      />
+    </v-col>
+  </v-row>
 </template>
 
 <script setup lang="ts">
 const modelValue = defineModel<[Date, Date]>({ required: true });
 
-const dateRangeText = computed(
-  () =>
-    `${toDateInputValue(modelValue.value[0])} ~ ${toDateInputValue(modelValue.value[1])}`,
-);
-
-// v-date-range-picker needs its own local state to reflect an in-progress
-// selection (a single clicked date) — a v-model that only ever writes back
-// once both dates are picked means the first click has no visible effect,
-// since the picker's own display is driven entirely by the model prop.
-const selection = ref<Date[]>([...modelValue.value]);
-
-watch(modelValue, (value) => {
-  selection.value = [...value];
+const fromDate = computed({
+  get: () => modelValue.value[0],
+  set: (value: Date) => {
+    modelValue.value = [value, modelValue.value[1]];
+  },
 });
 
-watch(selection, (value) => {
-  if (!value?.[0] || !value?.[1]) return;
-  modelValue.value = [value[0], value[1]];
+const toDate = computed({
+  get: () => modelValue.value[1],
+  set: (value: Date) => {
+    modelValue.value = [modelValue.value[0], value];
+  },
 });
 </script>
