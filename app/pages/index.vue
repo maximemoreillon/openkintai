@@ -1,6 +1,6 @@
 <template>
   <v-alert
-    v-if="error || activeError"
+    v-if="activeError"
     type="error"
     class="mb-4"
     text="Failed to load shifts. Please try refreshing the page."
@@ -22,15 +22,21 @@
     </v-col>
   </v-row>
 
-  <ShiftsTable v-if="data" :items="data" :loading="pending" />
+  <v-row justify="center">
+    <v-col cols="auto">
+      <v-btn
+        prepend-icon="mdi-format-list-bulleted"
+        text="My shifts"
+        variant="outlined"
+        color="primary"
+        :to="`/users/${user?.id}/shifts`"
+      />
+    </v-col>
+  </v-row>
 </template>
 
 <script setup lang="ts">
-const route = useRoute();
-
-const { data, refresh, pending, error } = await useFetch("/api/shifts", {
-  query: computed(() => route.query),
-});
+const { user } = useUserSession();
 
 const {
   data: active,
@@ -39,7 +45,6 @@ const {
 } = await useFetch("/api/shifts/active");
 
 function onRegistered() {
-  refresh();
   refreshActive();
 }
 </script>

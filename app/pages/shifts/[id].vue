@@ -1,5 +1,10 @@
 <template>
-  <v-breadcrumbs :items="breadcrumbs" />
+  <v-btn
+    prepend-icon="mdi-arrow-left"
+    text="Return"
+    variant="text"
+    @click="router.back()"
+  />
 
   <v-alert
     v-if="error"
@@ -28,8 +33,6 @@
 </template>
 
 <script setup lang="ts">
-import type { BreadcrumbItem } from "vuetify/lib/components/VBreadcrumbs/VBreadcrumbs.mjs";
-
 // The shape of a shift as returned over JSON (timestamps arrive as strings,
 // not the `Date` Drizzle's own types would suggest).
 type Shift = {
@@ -41,6 +44,7 @@ type Shift = {
 };
 
 const route = useRoute();
+const router = useRouter();
 
 // Typed explicitly: `/api/shifts/${id}` also matches `/api/shifts/active.get.ts`
 // by pattern, so without a generic the inferred type is a union with that
@@ -54,19 +58,6 @@ const { data: shift, error } = await useFetch<Shift>(
 );
 
 const saving = ref(false);
-
-const breadcrumbs = computed<BreadcrumbItem[]>(() => [
-  {
-    title: "Shifts",
-    to: "/",
-  },
-  {
-    title: shift.value
-      ? formatTimestamp(shift.value.clockIn)
-      : String(route.params.id),
-    disabled: true,
-  },
-]);
 
 const snackbar = ref({
   show: false,

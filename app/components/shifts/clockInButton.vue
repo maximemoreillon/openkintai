@@ -2,7 +2,7 @@
   <v-btn
     prepend-icon="mdi-play"
     text="Clock in"
-    color="primary"
+    color="green"
     @click="register"
     :disabled="props.disabled"
     :variant="props.disabled ? 'outlined' : 'elevated'"

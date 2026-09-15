@@ -1,5 +1,10 @@
 <template>
-  <v-breadcrumbs :items="breadcrumbs" />
+  <v-btn
+    prepend-icon="mdi-arrow-left"
+    text="Return"
+    variant="text"
+    @click="router.back()"
+  />
   <h2>{{ user?.name }}</h2>
 
   <v-alert
@@ -18,9 +23,8 @@
 </template>
 
 <script setup lang="ts">
-import type { BreadcrumbItem } from "vuetify/lib/components/VBreadcrumbs/VBreadcrumbs.mjs";
-
 const route = useRoute();
+const router = useRouter();
 
 const [
   { data: user, error: userError },
@@ -31,15 +35,4 @@ const [
     query: computed(() => route.query),
   }),
 ]);
-
-const breadcrumbs: BreadcrumbItem[] = [
-  {
-    title: "Users",
-    to: "/users",
-  },
-  {
-    title: user.value?.name || "Unknown user",
-    disabled: true,
-  },
-];
 </script>
