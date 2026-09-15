@@ -15,7 +15,7 @@
       {{ formatTimestamp(shift.clockOut) }}
     </p>
 
-    <v-textarea v-model="notes" label="Notes" class="mt-4" auto-grow />
+    <v-textarea v-model="shift.notes" label="Notes" class="mt-4" auto-grow />
 
     <v-btn text="Save" color="primary" :loading="saving" @click="save" />
   </template>
@@ -45,16 +45,14 @@ const route = useRoute();
 // Typed explicitly: `/api/shifts/${id}` also matches `/api/shifts/active.get.ts`
 // by pattern, so without a generic the inferred type is a union with that
 // route's response shape.
+// `deep: true` because the form below edits fields on `shift` in place —
+// useFetch's data is a shallowRef by Nuxt's default, which would make
+// nested mutations (shift.value.notes = ...) invisible to reactivity.
 const { data: shift, error } = await useFetch<Shift>(
   () => `/api/shifts/${route.params.id}`,
+  { deep: true },
 );
 
-const notes = computed({
-  get: () => shift.value?.notes ?? "",
-  set: (value: string) => {
-    if (shift.value) shift.value.notes = value;
-  },
-});
 const saving = ref(false);
 
 const breadcrumbs = computed<BreadcrumbItem[]>(() => [
@@ -77,13 +75,14 @@ const snackbar = ref({
 });
 
 async function save() {
+  if (!shift.value) return;
+
   saving.value = true;
   try {
-    const updated = await $fetch<Shift>(`/api/shifts/${route.params.id}`, {
+    await $fetch<void>(`/api/shifts/${route.params.id}`, {
       method: "PATCH",
-      body: { notes: notes.value },
+      body: shift.value,
     });
-    shift.value = updated;
     snackbar.value.color = "success";
     snackbar.value.text = "Saved";
     snackbar.value.show = true;

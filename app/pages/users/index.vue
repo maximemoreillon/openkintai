@@ -1,8 +1,7 @@
 <template>
   <v-row justify="space-between" align="center">
-    <v-col cols="auto">
-      <h2>Users</h2>
-    </v-col>
+    <h2>Users</h2>
+    <v-col cols="auto"> </v-col>
     <v-col cols="auto" v-if="userManagementUrl">
       <v-btn
         :href="userManagementUrl"
