@@ -1,16 +1,34 @@
 <template>
-  <v-toolbar class="px-4">
-    <ShiftsDateRangePicker v-model="range" />
-    <v-spacer />
-
-    <ShiftsExportButton
-      :items="items"
-      :from="fromDate"
-      :to="toDate"
-      :label="exportLabel"
-    />
-  </v-toolbar>
   <v-data-table :items="items" :headers="headers" :loading="props.loading">
+    <template #top>
+      <v-row class="pa-2">
+        <v-col cols="12" sm="4">
+          <v-date-input
+            v-model="fromDate"
+            label="From"
+            density="compact"
+            hide-details
+          />
+        </v-col>
+        <v-col cols="12" sm="4">
+          <v-date-input
+            v-model="toDate"
+            label="To"
+            density="compact"
+            hide-details
+          />
+        </v-col>
+        <v-spacer />
+        <v-col cols="auto">
+          <ShiftsExportButton
+            :items="items"
+            :from="fromDate"
+            :to="toDate"
+            :label="exportLabel"
+          />
+        </v-col>
+      </v-row>
+    </template>
     <template v-slot:item.duration="{ item }">
       {{ timeBetweenTimeStamps(item.clockIn, item.clockOut) }}
     </template>
@@ -47,24 +65,18 @@ const props = defineProps<{
 const now = new Date();
 const defaultFrom = new Date(now.getFullYear(), now.getMonth(), 1);
 
-const fromDate = computed(() =>
-  route.query.from ? parseLocalDate(String(route.query.from)) : defaultFrom,
-);
+const fromDate = computed({
+  get: () =>
+    route.query.from ? parseLocalDate(String(route.query.from)) : defaultFrom,
+  set: (value: Date) => {
+    router.push({ query: { ...route.query, from: toDateInputValue(value) } });
+  },
+});
 
-const toDate = computed(() =>
-  route.query.to ? parseLocalDate(String(route.query.to)) : now,
-);
-
-const range = computed({
-  get: (): [Date, Date] => [fromDate.value, toDate.value],
-  set: ([from, to]: [Date, Date]) => {
-    router.push({
-      query: {
-        ...route.query,
-        from: toDateInputValue(from),
-        to: toDateInputValue(to),
-      },
-    });
+const toDate = computed({
+  get: () => (route.query.to ? parseLocalDate(String(route.query.to)) : now),
+  set: (value: Date) => {
+    router.push({ query: { ...route.query, to: toDateInputValue(value) } });
   },
 });
 
