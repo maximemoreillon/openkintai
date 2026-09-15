@@ -1,21 +1,25 @@
 <template>
   <v-data-table :items="items" :headers="headers" :loading="props.loading">
     <template #top>
-      <v-row class="pa-2">
-        <v-col cols="12" sm="4">
+      <v-row class="pa-2" align="center">
+        <v-col cols="12" sm="auto">
           <v-date-input
             v-model="fromDate"
             label="From"
             density="compact"
             hide-details
+            variant="outlined"
+            min-width="18ch"
           />
         </v-col>
-        <v-col cols="12" sm="4">
+        <v-col cols="12" sm="auto">
           <v-date-input
             v-model="toDate"
             label="To"
             density="compact"
             hide-details
+            variant="outlined"
+            min-width="18ch"
           />
         </v-col>
         <v-spacer />

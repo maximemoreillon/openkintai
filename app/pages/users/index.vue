@@ -1,16 +1,19 @@
 <template>
-  <h2>Users</h2>
-
-  <v-btn
-    v-if="userManagementUrl"
-    :href="userManagementUrl"
-    target="_blank"
-    rel="noopener noreferrer"
-    text="Manage users"
-    prepend-icon="mdi-open-in-new"
-    variant="outlined"
-    class="mb-4"
-  />
+  <v-row justify="space-between" align="center">
+    <v-col cols="auto">
+      <h2>Users</h2>
+    </v-col>
+    <v-col cols="auto" v-if="userManagementUrl">
+      <v-btn
+        :href="userManagementUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        text="Manage users"
+        prepend-icon="mdi-open-in-new"
+        variant="outlined"
+      />
+    </v-col>
+  </v-row>
 
   <v-alert
     v-if="error"
@@ -23,9 +26,13 @@
     <v-list-item
       v-for="user in data"
       :key="user.id"
-      :title="`${user.name || 'Unknown user'} ${user.isManager ? '(Manager)' : ''}`"
+      :title="user.name || 'Unknown user'"
       :to="`/users/${user.id}/shifts`"
-    />
+    >
+      <template #append v-if="user.isManager">
+        <v-chip text="Manager" color="primary" />
+      </template>
+    </v-list-item>
   </v-list>
 </template>
 

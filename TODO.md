@@ -1,2 +1,0 @@
-- [ ] Ability to write memo/notes for shifts
-- [ ] Shift query using to/from instead of year/month
