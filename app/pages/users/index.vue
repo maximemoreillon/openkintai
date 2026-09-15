@@ -1,4 +1,11 @@
 <template>
+  <v-btn
+    prepend-icon="mdi-arrow-left"
+    text="Return"
+    variant="text"
+    @click="goBack(router, '/')"
+  />
+
   <v-row justify="space-between" align="center">
     <h2>Users</h2>
     <v-col cols="auto"> </v-col>
@@ -36,6 +43,7 @@
 </template>
 
 <script setup lang="ts">
+const router = useRouter();
 const { userManagementUrl } = useRuntimeConfig().public;
 
 const { data, error } = await useFetch("/api/users");

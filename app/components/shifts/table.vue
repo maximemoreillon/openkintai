@@ -50,7 +50,7 @@
         icon="mdi-pencil"
         variant="text"
         size="small"
-        :to="`/shifts/${item.id}`"
+        :to="`/users/${item.user_id}/shifts/${item.id}`"
       />
     </template>
   </v-data-table>

@@ -1,10 +1,5 @@
 <template>
-  <v-btn
-    prepend-icon="mdi-arrow-left"
-    text="Return"
-    variant="text"
-    @click="router.back()"
-  />
+  <v-breadcrumbs :items="breadcrumbs" />
 
   <v-alert
     v-if="error"
@@ -33,6 +28,8 @@
 </template>
 
 <script setup lang="ts">
+import type { BreadcrumbItem } from "vuetify/lib/components/VBreadcrumbs/VBreadcrumbs.mjs";
+
 // The shape of a shift as returned over JSON (timestamps arrive as strings,
 // not the `Date` Drizzle's own types would suggest).
 type Shift = {
@@ -44,7 +41,6 @@ type Shift = {
 };
 
 const route = useRoute();
-const router = useRouter();
 
 // Typed explicitly: `/api/shifts/${id}` also matches `/api/shifts/active.get.ts`
 // by pattern, so without a generic the inferred type is a union with that
@@ -53,11 +49,22 @@ const router = useRouter();
 // useFetch's data is a shallowRef by Nuxt's default, which would make
 // nested mutations (shift.value.notes = ...) invisible to reactivity.
 const { data: shift, error } = await useFetch<Shift>(
-  () => `/api/shifts/${route.params.id}`,
+  () => `/api/shifts/${route.params.shiftId}`,
   { deep: true },
 );
 
 const saving = ref(false);
+
+const breadcrumbs = computed<BreadcrumbItem[]>(() => [
+  { title: "Home", to: "/" },
+  { title: "Users", to: `/users/${route.params.id}/shifts` },
+  {
+    title: shift.value
+      ? formatTimestamp(shift.value.clockIn)
+      : String(route.params.shiftId),
+    disabled: true,
+  },
+]);
 
 const snackbar = ref({
   show: false,
@@ -70,7 +77,7 @@ async function save() {
 
   saving.value = true;
   try {
-    await $fetch<void>(`/api/shifts/${route.params.id}`, {
+    await $fetch<void>(`/api/shifts/${route.params.shiftId}`, {
       method: "PATCH",
       body: shift.value,
     });
