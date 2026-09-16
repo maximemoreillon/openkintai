@@ -1,38 +1,5 @@
 <template>
   <v-data-table :items="items" :headers="headers" :loading="props.loading">
-    <template #top>
-      <v-row class="pa-2" align="center">
-        <v-col cols="12" sm="auto">
-          <v-date-input
-            v-model="fromDate"
-            label="From"
-            density="compact"
-            hide-details
-            variant="outlined"
-            min-width="18ch"
-          />
-        </v-col>
-        <v-col cols="12" sm="auto">
-          <v-date-input
-            v-model="toDate"
-            label="To"
-            density="compact"
-            hide-details
-            variant="outlined"
-            min-width="18ch"
-          />
-        </v-col>
-        <v-spacer />
-        <v-col cols="auto">
-          <ShiftsExportButton
-            :items="items"
-            :from="fromDate"
-            :to="toDate"
-            :label="exportLabel"
-          />
-        </v-col>
-      </v-row>
-    </template>
     <template v-slot:item.duration="{ item }">
       {{ timeBetweenTimeStamps(item.clockIn, item.clockOut) }}
     </template>
@@ -57,29 +24,10 @@
 </template>
 
 <script setup lang="ts">
-import { useRouteQuery } from "@vueuse/router";
-
 const props = defineProps<{
   items: any[];
   loading?: boolean;
-  exportLabel?: string | null;
 }>();
-
-const now = new Date();
-const defaultFrom = new Date(now.getFullYear(), now.getMonth(), 1);
-
-const dateTransform = {
-  get: (value: string) => parseLocalDate(value),
-  set: (value: Date) => toDateInputValue(value),
-};
-
-const fromDate = useRouteQuery("from", toDateInputValue(defaultFrom), {
-  transform: dateTransform,
-});
-
-const toDate = useRouteQuery("to", toDateInputValue(now), {
-  transform: dateTransform,
-});
 
 const headers = [
   {
