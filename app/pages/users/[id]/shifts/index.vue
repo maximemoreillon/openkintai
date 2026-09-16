@@ -10,7 +10,7 @@
   />
 
   <template v-if="shifts">
-    <v-row class="pa-2" align="center">
+    <v-row class="mb-4" align="center">
       <v-col cols="12" sm="auto">
         <v-date-input
           v-model="fromDate"

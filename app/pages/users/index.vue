@@ -1,20 +1,17 @@
 <template>
   <v-breadcrumbs :items="breadcrumbs" />
+  <h2>Users</h2>
 
-  <v-row justify="space-between" align="center">
-    <h2>Users</h2>
-    <v-col cols="auto"> </v-col>
-    <v-col cols="auto" v-if="userManagementUrl">
-      <v-btn
-        :href="userManagementUrl"
-        target="_blank"
-        rel="noopener noreferrer"
-        text="Manage users"
-        prepend-icon="mdi-open-in-new"
-        variant="outlined"
-      />
-    </v-col>
-  </v-row>
+  <v-btn
+    v-if="userManagementUrl"
+    :href="userManagementUrl"
+    target="_blank"
+    rel="noopener noreferrer"
+    text="Manage users"
+    prepend-icon="mdi-open-in-new"
+    variant="outlined"
+    class="mb-4"
+  />
 
   <v-alert
     v-if="error"

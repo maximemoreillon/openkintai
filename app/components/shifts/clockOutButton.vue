@@ -8,6 +8,7 @@
     :loading="loading"
     :disabled="props.disabled"
     size="x-large"
+    block
   />
 </template>
 

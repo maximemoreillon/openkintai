@@ -8,6 +8,7 @@
     :variant="props.disabled ? 'outlined' : 'elevated'"
     :loading="loading"
     size="x-large"
+    block
   />
 </template>
 
