@@ -15,8 +15,14 @@
         <NuxtPage />
       </v-container>
     </v-main>
+    <v-snackbar
+      :text="snackbar.text"
+      v-model="snackbar.show"
+      :color="snackbar.color"
+    />
   </v-app>
 </template>
 <script setup>
 const { loggedIn } = useUserSession();
+const { snackbar } = useSnackbar();
 </script>

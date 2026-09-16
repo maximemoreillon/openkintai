@@ -9,11 +9,6 @@
     :disabled="props.disabled"
     size="x-large"
   />
-  <v-snackbar
-    :text="snackbar.text"
-    v-model="snackbar.show"
-    :color="snackbar.color"
-  />
 </template>
 
 <script setup lang="ts">
@@ -23,11 +18,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(["registered"]);
 
-const snackbar = ref({
-  show: false,
-  text: "",
-  color: "success",
-});
+const { notify } = useSnackbar();
 
 const loading = ref(false);
 
@@ -35,13 +26,9 @@ async function register() {
   loading.value = true;
   try {
     await $fetch(`/api/shifts/${props.id}`, { method: "PUT" });
-    snackbar.value.color = "success";
-    snackbar.value.text = "Clocked out successfully";
-    snackbar.value.show = true;
+    notify("Clocked out successfully");
   } catch (error: any) {
-    snackbar.value.color = "error";
-    snackbar.value.text = error?.data?.statusMessage || "Error";
-    snackbar.value.show = true;
+    notify(error?.data?.statusMessage || "Error", "error");
     console.error(error);
   } finally {
     loading.value = false;

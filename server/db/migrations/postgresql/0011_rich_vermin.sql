@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "shifts_one_open_per_user" ON "shifts" USING btree ("user_id") WHERE "shifts"."clockOut" is null;

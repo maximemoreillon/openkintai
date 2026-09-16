@@ -78,6 +78,13 @@
       "when": 1789437202708,
       "tag": "0010_slow_tattoo",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1789523599355,
+      "tag": "0011_rich_vermin",
+      "breakpoints": true
     }
   ]
 }

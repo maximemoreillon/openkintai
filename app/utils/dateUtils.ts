@@ -6,9 +6,7 @@ export function timeBetweenTimeStamps(ts1: string, ts2: string | null) {
   // Get difference in milliseconds
   const diffMs: number = Math.abs(endDate.getTime() - startDate.getTime());
 
-  // Convert milliseconds to larger units
-  // const diffDays: number = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  const diffHours: number = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+  const diffHours: number = Math.floor(diffMs / (1000 * 60 * 60));
   const diffMinutes: number = Math.floor((diffMs / (1000 * 60)) % 60);
 
   return `${diffHours.toString().padStart(2, "0")}:${diffMinutes.toString().padStart(2, "0")}`;

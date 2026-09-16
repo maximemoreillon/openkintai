@@ -19,12 +19,6 @@
 
     <v-btn text="Save" color="primary" :loading="saving" @click="save" />
   </template>
-
-  <v-snackbar
-    :text="snackbar.text"
-    v-model="snackbar.show"
-    :color="snackbar.color"
-  />
 </template>
 
 <script setup lang="ts">
@@ -57,6 +51,7 @@ const [{ data: shift, error }, { data: shiftUser }] = await Promise.all([
 ]);
 
 const saving = ref(false);
+const { notify } = useSnackbar();
 
 const breadcrumbs = computed<BreadcrumbItem[]>(() => {
   const userShiftsPath = `/users/${route.params.id}/shifts`;
@@ -77,12 +72,6 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => {
   ];
 });
 
-const snackbar = ref({
-  show: false,
-  text: "",
-  color: "success",
-});
-
 async function save() {
   if (!shift.value) return;
 
@@ -92,13 +81,9 @@ async function save() {
       method: "PATCH",
       body: shift.value,
     });
-    snackbar.value.color = "success";
-    snackbar.value.text = "Saved";
-    snackbar.value.show = true;
+    notify("Saved");
   } catch (error: any) {
-    snackbar.value.color = "error";
-    snackbar.value.text = error?.data?.statusMessage || "Error";
-    snackbar.value.show = true;
+    notify(error?.data?.statusMessage || "Error", "error");
   } finally {
     saving.value = false;
   }
