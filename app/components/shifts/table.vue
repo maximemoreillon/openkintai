@@ -57,8 +57,7 @@
 </template>
 
 <script setup lang="ts">
-const router = useRouter();
-const route = useRoute();
+import { useRouteQuery } from "@vueuse/router";
 
 const props = defineProps<{
   items: any[];
@@ -69,19 +68,17 @@ const props = defineProps<{
 const now = new Date();
 const defaultFrom = new Date(now.getFullYear(), now.getMonth(), 1);
 
-const fromDate = computed({
-  get: () =>
-    route.query.from ? parseLocalDate(String(route.query.from)) : defaultFrom,
-  set: (value: Date) => {
-    router.push({ query: { ...route.query, from: toDateInputValue(value) } });
-  },
+const dateTransform = {
+  get: (value: string) => parseLocalDate(value),
+  set: (value: Date) => toDateInputValue(value),
+};
+
+const fromDate = useRouteQuery("from", toDateInputValue(defaultFrom), {
+  transform: dateTransform,
 });
 
-const toDate = computed({
-  get: () => (route.query.to ? parseLocalDate(String(route.query.to)) : now),
-  set: (value: Date) => {
-    router.push({ query: { ...route.query, to: toDateInputValue(value) } });
-  },
+const toDate = useRouteQuery("to", toDateInputValue(now), {
+  transform: dateTransform,
 });
 
 const headers = [
