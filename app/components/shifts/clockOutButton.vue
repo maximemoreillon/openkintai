@@ -2,7 +2,7 @@
   <v-btn
     prepend-icon="mdi-stop"
     text="Clock out"
-    color="red"
+    color="secondary"
     @click="register"
     :variant="props.disabled ? 'outlined' : 'elevated'"
     :loading="loading"

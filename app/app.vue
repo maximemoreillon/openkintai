@@ -7,6 +7,7 @@
         </NuxtLink>
       </template>
       <template #append>
+        <ThemeToggleButton />
         <v-btn icon="mdi-logout" v-if="loggedIn" to="/login" />
       </template>
     </v-app-bar>
