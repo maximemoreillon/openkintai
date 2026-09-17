@@ -48,7 +48,6 @@
 
 <script setup lang="ts">
 import type { BreadcrumbItem } from "vuetify/lib/components/VBreadcrumbs/VBreadcrumbs.mjs";
-import { useRouteQuery } from "@vueuse/router";
 
 const route = useRoute();
 const { user: sessionUser } = useUserSession();
