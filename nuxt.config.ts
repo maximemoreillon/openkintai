@@ -51,6 +51,13 @@ export default defineNuxtConfig({
     public: {
       locale: "ja-JP",
       userManagementUrl: "",
+      // Unpaid break deducted from worked time once a shift reaches a given
+      // length, as "hoursThreshold:breakMinutes" pairs separated by commas,
+      // e.g. "6:30,8:60" means >=6h worked gets a 30min break deducted,
+      // >=8h gets 60min. Thresholds need not be sorted; empty means no
+      // break is ever deducted. Configured per deployment since break
+      // rules are a business policy, not something OpenKintai prescribes.
+      breakRules: "",
     },
   },
   app: {

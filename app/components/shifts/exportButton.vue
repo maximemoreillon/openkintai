@@ -15,6 +15,10 @@ const props = defineProps<{
   from: Date;
   to: Date;
   label?: string | null;
+  shiftCount: number;
+  totalMinutes: number;
+  adjustedMinutes: number;
+  hasBreakRules: boolean;
 }>();
 
 function escapeCsvField(field: string) {
@@ -23,6 +27,19 @@ function escapeCsvField(field: string) {
 
 function exportCsv() {
   const rows = [
+    ["Employee", props.label ?? ""],
+    ["Period", `${toDateInputValue(props.from)} to ${toDateInputValue(props.to)}`],
+    ["Shifts", String(props.shiftCount)],
+    ["Total hours", formatDurationMinutes(props.totalMinutes)],
+    ...(props.hasBreakRules
+      ? [
+          [
+            "Total hours (adjusted for breaks)",
+            formatDurationMinutes(props.adjustedMinutes),
+          ],
+        ]
+      : []),
+    [],
     ["Clock in", "Clock out", "Duration", "Notes"],
     ...props.items.map((item) => [
       formatTimestamp(item.clockIn),

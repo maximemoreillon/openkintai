@@ -10,39 +10,87 @@
   />
 
   <template v-if="shifts">
-    <v-row class="mb-4" align="center">
-      <v-col cols="12" sm="auto">
-        <v-date-input
-          v-model="fromDate"
-          label="From"
-          density="compact"
-          hide-details
-          variant="outlined"
-          min-width="18ch"
-        />
+    <v-row class="mb-4" align="center" justify="space-between">
+      <!-- Left: date picker -->
+      <v-col cols="12" lg="auto">
+        <v-row align="center">
+          <v-col cols="12" sm="6">
+            <v-date-input
+              v-model="fromDate"
+              label="From"
+              density="compact"
+              hide-details
+              variant="outlined"
+              min-width="18ch"
+            />
+          </v-col>
+          <v-col cols="12" sm="6">
+            <v-date-input
+              v-model="toDate"
+              label="To"
+              density="compact"
+              hide-details
+              variant="outlined"
+              min-width="18ch"
+            />
+          </v-col>
+        </v-row>
       </v-col>
-      <v-col cols="12" sm="auto">
-        <v-date-input
-          v-model="toDate"
-          label="To"
-          density="compact"
-          hide-details
-          variant="outlined"
-          min-width="18ch"
-        />
-      </v-col>
-      <v-spacer />
-      <v-col cols="auto">
-        <ShiftsExportButton
-          :items="shifts"
-          :from="fromDate"
-          :to="toDate"
-          :label="user?.name"
-        />
+      <!-- Right: Summary + Export -->
+      <v-col cols="12" lg="auto">
+        <v-row align="center" justify="space-between">
+          <v-col cols="12" sm="auto" class="text-center">
+            {{ shiftCount }} shift{{ shiftCount === 1 ? "" : "s" }} ·
+            {{ formatDurationMinutes(totalMinutes) }} total
+            <template v-if="hasBreakRules">
+              · {{ formatDurationMinutes(adjustedMinutes) }} adjusted
+            </template>
+          </v-col>
+          <v-col cols="12" sm="auto">
+            <ShiftsExportButton
+              :items="shifts"
+              :from="fromDate"
+              :to="toDate"
+              :label="user?.name"
+              :shift-count="shiftCount"
+              :total-minutes="totalMinutes"
+              :adjusted-minutes="adjustedMinutes"
+              :has-break-rules="hasBreakRules"
+              block
+            />
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
 
-    <ShiftsTable :items="shifts" :loading="pending" />
+    <v-data-table
+      :items="shifts"
+      :headers="headers"
+      :loading="pending"
+      items-per-page="-1"
+      hide-default-footer
+    >
+      <template v-slot:item.duration="{ item }">
+        {{ timeBetweenTimeStamps(item.clockIn, item.clockOut) }}
+      </template>
+
+      <template v-slot:item.clockIn="{ item }">
+        {{ formatTimestamp(item.clockIn) }}
+      </template>
+
+      <template v-slot:item.clockOut="{ item }">
+        {{ formatTimestamp(item.clockOut) }}
+      </template>
+
+      <template v-slot:item.actions="{ item }">
+        <v-btn
+          icon="mdi-pencil"
+          variant="text"
+          size="small"
+          :to="`/users/${item.user_id}/shifts/${item.id}`"
+        />
+      </template>
+    </v-data-table>
   </template>
 </template>
 
@@ -77,6 +125,47 @@ const fromDate = useRouteQuery("from", toDateInputValue(defaultFrom), {
 const toDate = useRouteQuery("to", toDateInputValue(now), {
   transform: dateTransform,
 });
+
+const shiftCount = computed(() => shifts.value?.length ?? 0);
+
+const breakRules = parseBreakRules(useRuntimeConfig().public.breakRules);
+
+const totalMinutes = computed(() =>
+  (shifts.value ?? []).reduce(
+    (sum, shift) => sum + durationMinutes(shift.clockIn, shift.clockOut),
+    0,
+  ),
+);
+
+const adjustedMinutes = computed(() =>
+  totalAdjustedMinutes(shifts.value ?? [], breakRules),
+);
+
+const hasBreakRules = breakRules.length > 0;
+
+const headers = [
+  {
+    key: "clockIn",
+    title: "Clock in ",
+  },
+  {
+    key: "clockOut",
+    title: "Clock out ",
+  },
+  {
+    key: "duration",
+    title: "Duration",
+  },
+  {
+    key: "notes",
+    title: "Notes",
+  },
+  {
+    key: "actions",
+    title: "",
+    sortable: false,
+  },
+];
 
 const breadcrumbs = computed<BreadcrumbItem[]>(() => [
   { title: "Home", to: "/" },

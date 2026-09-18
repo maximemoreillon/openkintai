@@ -1,15 +1,19 @@
-export function timeBetweenTimeStamps(ts1: string, ts2: string | null) {
-  if (!ts2) return "";
+export function durationMinutes(ts1: string, ts2: string | null) {
+  if (!ts2) return 0;
   const startDate: Date = new Date(ts1);
   const endDate: Date = new Date(ts2);
+  return Math.abs(endDate.getTime() - startDate.getTime()) / (1000 * 60);
+}
 
-  // Get difference in milliseconds
-  const diffMs: number = Math.abs(endDate.getTime() - startDate.getTime());
+export function formatDurationMinutes(totalMinutes: number) {
+  const hours: number = Math.floor(totalMinutes / 60);
+  const minutes: number = Math.floor(totalMinutes % 60);
+  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+}
 
-  const diffHours: number = Math.floor(diffMs / (1000 * 60 * 60));
-  const diffMinutes: number = Math.floor((diffMs / (1000 * 60)) % 60);
-
-  return `${diffHours.toString().padStart(2, "0")}:${diffMinutes.toString().padStart(2, "0")}`;
+export function timeBetweenTimeStamps(ts1: string, ts2: string | null) {
+  if (!ts2) return "";
+  return formatDurationMinutes(durationMinutes(ts1, ts2));
 }
 
 export function formatTimestamp(ts: string | null) {
