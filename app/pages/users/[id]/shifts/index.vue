@@ -42,9 +42,6 @@
           <v-col cols="12" sm="auto" class="text-center">
             {{ shiftCount }} shift{{ shiftCount === 1 ? "" : "s" }} ·
             {{ formatDurationMinutes(totalMinutes) }} total
-            <template v-if="hasBreakRules">
-              · {{ formatDurationMinutes(adjustedMinutes) }} adjusted
-            </template>
           </v-col>
           <v-col cols="12" sm="auto">
             <ShiftsExportButton
@@ -54,8 +51,6 @@
               :label="user?.name"
               :shift-count="shiftCount"
               :total-minutes="totalMinutes"
-              :adjusted-minutes="adjustedMinutes"
-              :has-break-rules="hasBreakRules"
               block
             />
           </v-col>
@@ -128,20 +123,12 @@ const toDate = useRouteQuery("to", toDateInputValue(now), {
 
 const shiftCount = computed(() => shifts.value?.length ?? 0);
 
-const breakRules = parseBreakRules(useRuntimeConfig().public.breakRules);
-
 const totalMinutes = computed(() =>
   (shifts.value ?? []).reduce(
     (sum, shift) => sum + durationMinutes(shift.clockIn, shift.clockOut),
     0,
   ),
 );
-
-const adjustedMinutes = computed(() =>
-  totalAdjustedMinutes(shifts.value ?? [], breakRules),
-);
-
-const hasBreakRules = breakRules.length > 0;
 
 const headers = [
   {
