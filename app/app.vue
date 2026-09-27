@@ -3,7 +3,10 @@
     <v-app-bar>
       <template #title>
         <NuxtLink to="/" class="text-decoration-none" style="color: inherit">
-          OpenKintai
+          <span class="d-flex align-center ga-2">
+            <AppIcon />
+            <span> OpenKintai </span>
+          </span>
         </NuxtLink>
       </template>
       <template #append>
@@ -24,6 +27,8 @@
   </v-app>
 </template>
 <script setup>
+import AppIcon from "./components/AppIcon.vue";
+
 const { loggedIn } = useUserSession();
 const { snackbar } = useSnackbar();
 </script>
