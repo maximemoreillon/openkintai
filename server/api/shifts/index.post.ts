@@ -1,12 +1,14 @@
 import { and, eq, isNull } from "drizzle-orm";
 
 export default defineEventHandler(async (event) => {
-  const { user } = await requireUserSession(event);
+  const { user } = event.context;
 
   const [openShift] = await db
     .select()
     .from(schema.shifts)
-    .where(and(eq(schema.shifts.user_id, user.id), isNull(schema.shifts.clockOut)));
+    .where(
+      and(eq(schema.shifts.user_id, user.id), isNull(schema.shifts.clockOut)),
+    );
 
   if (openShift) {
     throw createError({ statusCode: 409, statusMessage: "Already clocked in" });
@@ -27,7 +29,10 @@ export default defineEventHandler(async (event) => {
     // shifts_one_open_per_user partial unique index (see schema.ts) rejects
     // a second concurrent clock-in at the DB level.
     if (error?.code === "23505") {
-      throw createError({ statusCode: 409, statusMessage: "Already clocked in" });
+      throw createError({
+        statusCode: 409,
+        statusMessage: "Already clocked in",
+      });
     }
     throw error;
   }

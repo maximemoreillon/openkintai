@@ -1,12 +1,16 @@
 import { and, eq, gte, lt } from "drizzle-orm";
 
 export default defineEventHandler(async (event) => {
+  const { user } = event.context;
   const { id } = getRouterParams(event);
   const { from, to } = getQuery(event);
 
   if (!id) throw createError({ statusCode: 400, statusMessage: "Missing id" });
 
   const userId = Number(id);
+
+  if (!user.isManager && user.id !== userId)
+    throw createError({ statusCode: 403, statusMessage: "Unauthorized" });
 
   const now = new Date();
   const startDate = from

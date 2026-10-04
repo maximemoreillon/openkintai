@@ -36,6 +36,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     managerGroup: "",
+    apiKey: "",
     oauth: {
       oidc: {
         clientId: "",
