@@ -44,7 +44,9 @@ function exportCsv() {
 
   const csv = rows.map((row) => row.map(escapeCsvField).join(",")).join("\n");
 
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  // UTF-8 BOM so Excel (which assumes Shift-JIS on Japanese Windows) reads
+  // non-ASCII names/notes correctly when the CSV is opened directly.
+  const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
 
   const label = props.label?.trim().toLowerCase().replace(/\s+/g, "-");
