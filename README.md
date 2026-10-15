@@ -47,7 +47,7 @@ The app is available at `http://localhost:3000`.
 | `NUXT_OAUTH_OIDC_OPENID_CONFIG` | URL of the provider's OpenID Connect discovery document (`/.well-known/openid-configuration`) |
 | `NUXT_OAUTH_OIDC_REDIRECT_URL`  | Optional explicit OIDC callback URL (e.g. `https://openkintai.example.com/auth/oidc`). Only needed behind a proxy/tunnel that doesn't set `X-Forwarded-Proto` correctly — see below. |
 | `NUXT_MANAGER_GROUP`            | Name of the OIDC group whose members are granted manager access (view other users' shifts)    |
-| `NUXT_CLOCK_ALLOWED_NETWORKS`   | Optional comma-separated IPs/CIDRs (IPv4 or IPv6) allowed to clock in/out, e.g. the office's public IP. Empty = no restriction. See "Restricting clock-in to the office network". |
+| `NUXT_CLOCK_ALLOWED_NETWORKS`   | Optional comma-separated IPs/CIDRs (IPv4 or IPv6) allowed to clock in/out, e.g. the office's public IP. `self` = this server's own public IP (see below). Empty = no restriction. See "Restricting clock-in to the office network". |
 | `NUXT_CLIENT_IP_HEADER`         | Header carrying the real client IP when behind a proxy (e.g. `cf-connecting-ip` for Cloudflare). Empty = use the TCP peer address. |
 | `NUXT_PUBLIC_LOCALE`            | Locale used to format displayed timestamps (e.g. `ja-JP`, `en-US`). Defaults to `ja-JP`.      |
 | `NUXT_PUBLIC_USER_MANAGEMENT_URL` | Optional link to your OIDC provider's user management screen (e.g. an Authentik users page), shown as a "Manage users" button on the Users page. Omit to hide the button. |
@@ -60,7 +60,7 @@ Set `NUXT_CLOCK_ALLOWED_NETWORKS` to reject clock in/out (403) from anywhere els
 - **Behind Cloudflare (Tunnel)**: traffic from the office LAN reaches Cloudflare from the office's **public** IP, so allowlist that (plus its IPv6 prefix if the office has IPv6), and set `NUXT_CLIENT_IP_HEADER=cf-connecting-ip`. Cloudflare overwrites that header, so clients can't forge it — as long as the app (and any proxy in front of it, e.g. Envoy) is unreachable except through the tunnel.
 - **Direct LAN access, no proxy**: leave `NUXT_CLIENT_IP_HEADER` empty and allowlist the private range (e.g. `192.168.1.0/24`).
 
-The office's public IP must be static, or the allowlist goes stale when it changes.
+The office's public IP must be static, or the allowlist goes stale when it changes. If the app itself is hosted on the office network, use `self` instead (e.g. `NUXT_CLOCK_ALLOWED_NETWORKS=self`): on every clock in/out the server looks up its own public IP (via Cloudflare's `/cdn-cgi/trace`) and allows that, so a dynamic office IP is followed automatically. If the lookup fails, clock in/out is rejected (503). `self` can be combined with other entries.
 
 ## Timezone
 

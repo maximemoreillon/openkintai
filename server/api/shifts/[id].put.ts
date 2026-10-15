@@ -3,7 +3,7 @@ import { and, eq, isNull } from "drizzle-orm";
 export default defineEventHandler(async (event) => {
   const { user } = event.context;
 
-  assertClockNetwork(event);
+  await assertClockNetwork(event);
 
   const { id } = getRouterParams(event);
 
