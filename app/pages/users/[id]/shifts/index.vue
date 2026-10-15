@@ -74,7 +74,13 @@
       </template>
 
       <template v-slot:item.clockOut="{ item }">
-        {{ formatTimestamp(item.clockOut) }}
+        <ShiftsClockOutButton
+          v-if="!item.clockOut"
+          :id="item.id"
+          size="small"
+          @registered="refresh"
+        />
+        <template v-else>{{ formatTimestamp(item.clockOut) }}</template>
       </template>
 
       <template v-slot:item.actions="{ item }">
@@ -97,7 +103,7 @@ const { user: sessionUser } = useUserSession();
 
 const [
   { data: user, error: userError },
-  { data: shifts, pending, error: shiftsError },
+  { data: shifts, pending, error: shiftsError, refresh },
 ] = await Promise.all([
   useFetch(() => `/api/users/${route.params.id}`),
   useFetch(() => `/api/users/${route.params.id}/shifts`, {

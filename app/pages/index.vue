@@ -19,6 +19,8 @@
           :id="active?.shift?.id"
           @registered="refresh"
           :disabled="!active?.shift"
+          size="x-large"
+          block
         />
       </v-col>
     </v-row>

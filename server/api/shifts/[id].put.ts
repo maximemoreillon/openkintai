@@ -3,15 +3,17 @@ import { and, eq, isNull } from "drizzle-orm";
 export default defineEventHandler(async (event) => {
   const { user } = event.context;
 
-  await assertClockNetwork(event);
+  // Managers clocking out on behalf of someone may not be at the office
+  if (!user.isManager) await assertClockNetwork(event);
 
   const { id } = getRouterParams(event);
 
   const currentTime = new Date();
 
+  // Managers can clock out anyone's open shift, e.g. an employee who forgot
   const where = and(
     eq(schema.shifts.id, Number(id)),
-    eq(schema.shifts.user_id, user.id),
+    user.isManager ? undefined : eq(schema.shifts.user_id, user.id),
     isNull(schema.shifts.clockOut),
   );
 
