@@ -3,6 +3,8 @@ import { and, eq, isNull } from "drizzle-orm";
 export default defineEventHandler(async (event) => {
   const { user } = event.context;
 
+  assertClockNetwork(event);
+
   const { id } = getRouterParams(event);
 
   const currentTime = new Date();

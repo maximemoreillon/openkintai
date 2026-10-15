@@ -3,6 +3,8 @@ import { and, eq, isNull } from "drizzle-orm";
 export default defineEventHandler(async (event) => {
   const { user } = event.context;
 
+  assertClockNetwork(event);
+
   const [openShift] = await db
     .select()
     .from(schema.shifts)

@@ -37,6 +37,11 @@ export default defineNuxtConfig({
   runtimeConfig: {
     managerGroup: "",
     apiKey: "",
+    // Comma-separated IPs/CIDRs allowed to clock in/out (empty = anywhere).
+    clockAllowedNetworks: "",
+    // Header holding the real client IP when behind a proxy (e.g.
+    // "cf-connecting-ip" for Cloudflare). Empty = use the socket address.
+    clientIpHeader: "",
     oauth: {
       oidc: {
         clientId: "",
